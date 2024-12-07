@@ -1,52 +1,48 @@
 package com.kingyu.flappybird.util;
 
-import java.io.FileInputStream;
+import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 /**
- * 音乐工具类
+ * Music Utility Class
  *
- * @author Kingyu
- * wav音频：JDK提供的类可直接解码 mp3音频：JDK没有提供支持，需要使用第三方的工具包
+ * Handles audio playback for WAV files.
+ * Note: For MP3 support, you would need a third-party library like JLayer.
  */
 public class MusicUtil {
 
-    private static AudioStream fly;
-    private static AudioStream crash;
-    private static AudioStream score;
+    private static Clip flyClip;
+    private static Clip crashClip;
+    private static Clip scoreClip;
 
-    // wav播放
+    // Play fly sound
     public static void playFly() {
-        try {
-            // create an AudioStream from the InputStream
-            InputStream flyIn = new FileInputStream("resources/wav/fly.wav");
-            fly = new AudioStream(flyIn);
-        } catch (IOException ignored) {
-        }
-        AudioPlayer.player.start(fly);
+        flyClip = playSound("resources/wav/fly.wav");
     }
 
+    // Play crash sound
     public static void playCrash() {
-        try {
-            // create an AudioStream from the InputStream
-            InputStream crashIn = new FileInputStream("resources/wav/crash.wav");
-            crash = new AudioStream(crashIn);
-        } catch (IOException ignored) {
-        }
-        AudioPlayer.player.start(crash);
+        crashClip = playSound("resources/wav/crash.wav");
     }
 
+    // Play score sound
     public static void playScore() {
+        scoreClip = playSound("resources/wav/score.wav");
+    }
+
+    // Generic method to play a sound
+    private static Clip playSound(String filePath) {
         try {
-            // create an AudioStream from the InputStream
-            InputStream scoreIn = new FileInputStream("resources/wav/score.wav");
-            score = new AudioStream(scoreIn);
-        } catch (IOException ignored) {
+            File audioFile = new File(filePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+            return clip;
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+            return null;
         }
-        AudioPlayer.player.start(score);
     }
 }
