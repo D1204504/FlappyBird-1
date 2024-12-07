@@ -34,6 +34,10 @@ public class Bird {
     public static final int BIRD_DEAD_FALL = 3;
     public static final int BIRD_DEAD = 4;
 
+    public int getState() {
+        return this.state;
+    }
+
     private final Rectangle birdCollisionRect; // 碰撞矩形
     public static final int RECT_DESCALE = 2; // 补偿碰撞矩形宽高的参数
 
