@@ -1,31 +1,63 @@
 package com.kingyu.flappybird.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.kingyu.flappybird.component.Pipe;
+import com.kingyu.flappybird.util.Constant;
 
-public class PipeTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Test
-    public void testPipeInitialization() {
-        Pipe pipe = new Pipe();
-        pipe.setAttribute(100, 200, 300, Pipe.TYPE_TOP_NORMAL, true);
-        assertEquals(100, pipe.getX(), "x 坐標應該正確初始化");
-        assertEquals(200, pipe.getPipeRect().y, "y 坐標應該正確初始化");
-        assertTrue(pipe.isVisible(), "水管應該為可見狀態");
+class PipeTest {
+
+    private Pipe pipe;
+
+    @BeforeEach
+    void setUp() {
+        pipe = new Pipe();
     }
 
     @Test
-    public void testPipeMovement() {
-        Pipe pipe = new Pipe();
-        pipe.setAttribute(100, 200, 300, Pipe.TYPE_TOP_NORMAL, true);
-        pipe.draw(null, new Bird()); // 模擬繪製
-        assertTrue(pipe.getX() < 100, "繪製後應更新 x 坐標");
+    void testInitialAttributes() {
+        // 測試水管初始屬性是否正確
+        assertEquals(Constant.GAME_SPEED, pipe.speed);
+        assertTrue(pipe.getPipeRect().width > 0);
     }
 
     @Test
-    public void testPipeOutOfFrame() {
+    void testSetAttributes() {
+        pipe.setAttribute(100, 200, 300, Pipe.TYPE_TOP_NORMAL, true);
+        assertEquals(100, pipe.getX());
+        assertEquals(200, pipe.getPipeRect().y);
+        assertTrue(pipe.isVisible());
+    }
+
+    @Test
+    void testVisibility() {
+        pipe.setAttribute(100, 0, 100, Pipe.TYPE_TOP_NORMAL, true); // 初始化水管
+        assertTrue(pipe.isVisible()); // 初始時應該可見
+
+        // 模擬水管移動超出屏幕
+        Bird bird = new Bird(); // 創建一個 Bird 對象，模擬傳入
+        while (pipe.getX() >= -Pipe.PIPE_HEAD_WIDTH) {
+            pipe.draw(null, bird); // 通過 draw() 方法間接調用 movement()
+        }
+
+        assertFalse(pipe.isVisible()); // 離開屏幕後應該不可見
+    }
+
+
+    @Test
+    void testVisibilityWithDraw() {
         Pipe pipe = new Pipe();
-        pipe.setAttribute(-50, 200, 300, Pipe.TYPE_TOP_NORMAL, true);
-        assertFalse(pipe.isInFrame(), "水管應該已經移出視窗");
+        pipe.setAttribute(Constant.FRAME_WIDTH, 0, 100, Pipe.TYPE_TOP_NORMAL, true); // 初始化水管
+
+        // 模擬水管移動到屏幕外部
+        while (pipe.getX() >= -Pipe.PIPE_HEAD_WIDTH) {
+            pipe.draw(null, new Bird()); // 通過 draw 方法觸發 movement
+        }
+
+        assertFalse(pipe.isVisible()); // 離開屏幕後應該不可見
     }
 }
+

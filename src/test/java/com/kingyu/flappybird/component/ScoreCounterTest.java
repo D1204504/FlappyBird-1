@@ -3,37 +3,49 @@ package com.kingyu.flappybird.component;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.kingyu.flappybird.component.ScoreCounter;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ScoreCounterTest {
+class ScoreCounterTest {
+
+    private ScoreCounter scoreCounter;
 
     @BeforeEach
-    public void resetScoreCounter() {
-        ScoreCounter scoreCounter = ScoreCounter.getInstance();
-        scoreCounter.reset(); // 重置分數狀態
+    void setUp() {
+        scoreCounter = ScoreCounter.getInstance();
+        scoreCounter.reset();
     }
 
     @Test
-    public void testInitialScore() {
-        ScoreCounter scoreCounter = ScoreCounter.getInstance();
-        assertEquals(0, scoreCounter.getCurrentScore(), "初始分數應該為 0");
+    void testInitialScore() {
+        assertEquals(0, scoreCounter.getCurrentScore());
+        assertTrue(scoreCounter.getBestScore() >= 0);
     }
 
     @Test
-    public void testScoreIncrement() {
-        ScoreCounter scoreCounter = ScoreCounter.getInstance();
-        Bird bird = new Bird(); // 模擬一隻未死亡的鳥
-        scoreCounter.score(bird);
-        assertEquals(1, scoreCounter.getCurrentScore(), "得分應該增加 1");
+    void testScoreAccumulation() {
+        Bird bird = new Bird(); // 創建有效的 Bird 對象
+        bird.reset(); // 重置狀態
+        scoreCounter.score(bird); // 模擬得分
+        assertEquals(1, scoreCounter.getCurrentScore()); // 檢查分數是否正確
     }
 
     @Test
-    public void testSaveBestScore() {
-        ScoreCounter scoreCounter = ScoreCounter.getInstance();
-        long initialBest = scoreCounter.getBestScore();
-        Bird bird = new Bird(); // 模擬一隻未死亡的鳥
-        scoreCounter.score(bird);
-        scoreCounter.saveScore();
-        assertTrue(scoreCounter.getBestScore() >= initialBest, "最高分數應該更新");
+    void testBestScoreUpdate() {
+        Bird bird = new Bird(); // 創建有效的 Bird 對象
+        bird.reset(); // 確保 Bird 處於正常狀態
+        scoreCounter.score(bird); // 模擬得分
+        scoreCounter.saveScore(); // 保存最高分
+        assertEquals(scoreCounter.getCurrentScore(), scoreCounter.getBestScore()); // 檢查最高分是否更新
+    }
+
+    @Test
+    void testReset() {
+        Bird bird = new Bird(); // 創建有效的 Bird 對象
+        bird.reset();
+        scoreCounter.score(bird); // 模擬得分
+        scoreCounter.reset(); // 重置分數
+        assertEquals(0, scoreCounter.getCurrentScore()); // 檢查分數是否重置
     }
 }

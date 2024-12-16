@@ -1,44 +1,54 @@
 package com.kingyu.flappybird.component;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.awt.Rectangle;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.kingyu.flappybird.component.Bird;
+import com.kingyu.flappybird.util.Constant;
 
-public class BirdTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    @Test
-    public void testBirdInitialization() {
-        Bird bird = new Bird();
-        assertEquals(0, bird.getCurrentScore(), "初始分數應為 0");
-        assertFalse(bird.isDead(), "初始狀態應該為未死亡");
+class BirdTest {
+
+    private Bird bird;
+
+    @BeforeEach
+    void setUp() {
+        bird = new Bird();
     }
 
     @Test
-    public void testBirdFlap() {
-        Bird bird = new Bird();
-        bird.birdFlap();
-        assertEquals(Bird.BIRD_UP, bird.getState(), "振翅後狀態應為上升");
+    void testInitialPosition() {
+        int expectedY = (Constant.FRAME_HEIGHT >> 1) - (Bird.BIRD_HEIGHT / 2) + Bird.RECT_DESCALE * 2;
+        assertEquals(expectedY, bird.getBirdCollisionRect().y);
     }
 
+
     @Test
-    public void testBirdFall() {
+    void testFlap() {
         Bird bird = new Bird();
+        bird.keyReleased(); // 確保按鍵釋放
+        bird.birdFlap();    // 模擬振翅
+        assertEquals(Bird.BIRD_UP, bird.getState());
+    }
+
+
+
+    @Test
+    void testFall() {
         bird.birdFall();
-        assertEquals(Bird.BIRD_FALL, bird.getState(), "下落後狀態應為下降");
+        assertEquals(Bird.BIRD_FALL, bird.getState());
     }
 
     @Test
-    public void testBirdCollisionRect() {
-        Bird bird = new Bird();
-        Rectangle rect = bird.getBirdCollisionRect();
-        assertNotNull(rect, "碰撞矩形應被初始化");
+    void testCollisionRectangle() {
+        assertNotNull(bird.getBirdCollisionRect());
+        assertEquals(Bird.BIRD_WIDTH - Bird.RECT_DESCALE * 3, bird.getBirdCollisionRect().width);
     }
 
     @Test
-    public void testBirdDeath() {
-        Bird bird = new Bird();
+    void testDie() {
         bird.deadBirdFall();
-        assertTrue(bird.isDead(), "死亡後狀態應該為死亡");
+        assertEquals(Bird.BIRD_DEAD_FALL, bird.getState());
     }
 }
