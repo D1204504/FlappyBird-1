@@ -94,5 +94,19 @@ class BirdTest {
         bird.deadBirdFall();
         assertTrue(bird.isDead(), "小鳥死亡後應該返回 true");
     }
+    @Test
+    void testDeadBirdFall() {
+        bird.deadBirdFall();
+        assertEquals(Bird.BIRD_DEAD_FALL, bird.getState(), "Bird should enter dead fall state.");
+    }
 
+    @Test
+    void testKeyReleasedLogic() {
+        bird.keyPressed();
+        assertFalse(bird.keyIsReleased(), "Key flag should be false after pressing.");
+        bird.keyReleased();
+        assertTrue(bird.keyIsReleased(), "Key flag should be true after releasing.");
+    }
 }
+
+
