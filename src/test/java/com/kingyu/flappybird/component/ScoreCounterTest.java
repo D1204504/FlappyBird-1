@@ -2,10 +2,11 @@ package com.kingyu.flappybird.component;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.kingyu.flappybird.component.ScoreCounter;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.*;
+import java.io.*;
+import static org.mockito.Mockito.*;
+
 
 class ScoreCounterTest {
 
@@ -47,5 +48,14 @@ class ScoreCounterTest {
         scoreCounter.score(bird); // 模擬得分
         scoreCounter.reset(); // 重置分數
         assertEquals(0, scoreCounter.getCurrentScore()); // 檢查分數是否重置
+    }
+    @Test
+    void testScoreWithDeadBird() {
+        // Test scoring with a dead bird
+        Bird deadBird = new Bird();
+        deadBird.deadBirdFall(); // Mark the bird as dead
+        long initialScore = scoreCounter.getCurrentScore();
+        scoreCounter.score(deadBird); // Try scoring with the dead bird
+        assertEquals(initialScore, scoreCounter.getCurrentScore(), "Score should not increase if the bird is dead");
     }
 }

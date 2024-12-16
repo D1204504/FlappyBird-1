@@ -32,7 +32,7 @@ public class MusicUtil {
     }
 
     // Generic method to play a sound
-    private static Clip playSound(String filePath) {
+    public static Clip playSound(String filePath) {
         try {
             File audioFile = new File(filePath);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);

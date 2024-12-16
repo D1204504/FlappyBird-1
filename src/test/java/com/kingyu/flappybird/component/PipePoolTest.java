@@ -1,7 +1,6 @@
 package com.kingyu.flappybird.component;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import com.kingyu.flappybird.component.PipePool;
 import org.junit.jupiter.api.BeforeEach;
 class PipePoolTest {
     @BeforeEach
@@ -19,7 +18,12 @@ class PipePoolTest {
         }
         assertNull(PipePool.get("Pipe"), "超過初始化數量後應返回 null");
     }
-
+    @Test
+    void testClear() {
+        // Test that the pool clears the items correctly
+        PipePool.clear();
+        assertNull(PipePool.get("Pipe"), "Pool should be empty after clear");
+    }
     @Test
     void testGiveBackPipe() {
         Pipe pipe = PipePool.get("Pipe");
@@ -61,5 +65,37 @@ class PipePoolTest {
 
         Pipe reusedPipe = PipePool.get("Pipe");
         assertSame(pipe, reusedPipe, "歸還的對象應再次被重複利用");
+    }
+    @Test
+    void testGetAndGiveBackMovingPipe() {
+        // Test that MovingPipe works correctly in the pool
+        MovingPipe movingPipe = (MovingPipe) PipePool.get("MovingPipe");
+        assertNotNull(movingPipe, "Should be able to get a MovingPipe from the pool");
+
+        movingPipe.setVisible(false); // Simulate the moving pipe being used
+        assertFalse(movingPipe.isVisible(), "MovingPipe should be invisible when used");
+
+        PipePool.giveBack(movingPipe); // Return it to the pool
+        assertTrue(movingPipe.isVisible(), "Returned MovingPipe should be set to visible");
+
+        MovingPipe reusedMovingPipe = (MovingPipe) PipePool.get("MovingPipe");
+        assertSame(movingPipe, reusedMovingPipe, "Returned MovingPipe should be reused");
+    }
+
+    @Test
+    void testGiveBackMovingPipe() {
+        // Test returning a MovingPipe to the pool
+        MovingPipe movingPipe = (MovingPipe) PipePool.get("MovingPipe");
+        assertNotNull(movingPipe, "Should be able to get a MovingPipe from the pool");
+
+        movingPipe.setVisible(false); // Simulate the moving pipe being used
+        assertFalse(movingPipe.isVisible(), "MovingPipe should be invisible when used");
+
+        PipePool.giveBack(movingPipe); // Return it to the pool
+
+        assertTrue(movingPipe.isVisible(), "Returned MovingPipe should be set to visible");
+
+        MovingPipe reusedMovingPipe = (MovingPipe) PipePool.get("MovingPipe");
+        assertSame(movingPipe, reusedMovingPipe, "Returned MovingPipe should be reused");
     }
 }
