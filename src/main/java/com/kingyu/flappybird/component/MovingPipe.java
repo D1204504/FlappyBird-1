@@ -17,7 +17,11 @@ public class MovingPipe extends Pipe {
     private int direction;
     public static final int DIR_UP = 0;
     public static final int DIR_DOWN = 1;
-
+    public void reset() {
+        this.x = 0; // 重置位置
+        this.y = 0;
+        this.setVisible(true); // 重置為可見
+    }
     // 构造器
     public MovingPipe() {
         super();

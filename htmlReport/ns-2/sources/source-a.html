@@ -1,0 +1,214 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=x-windows-950"> 
+  <title>Coverage Report > ScoreCounter</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kingyu.flappybird.component</a>
+</div>
+
+<h1>Coverage Summary for Class: ScoreCounter (com.kingyu.flappybird.component)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScoreCounter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (24/28)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ScoreCounter$1</td>
+  </tr>
+  <tr>
+    <td class="name">ScoreCounter$ScoreCounterHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.2%
+  </span>
+  <span class="absValue">
+    (25/29)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kingyu.flappybird.component;
+&nbsp;
+&nbsp;import java.io.DataInputStream;
+&nbsp;import java.io.DataOutputStream;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileInputStream;
+&nbsp;import java.io.FileOutputStream;
+&nbsp;
+&nbsp;import com.kingyu.flappybird.util.Constant;
+&nbsp;import com.kingyu.flappybird.util.MusicUtil;
+&nbsp;
+&nbsp;/**
+&nbsp; * 村???竟, ㄏノ???场????ㄒ家Α
+&nbsp; *
+&nbsp; * @author Kingyu
+&nbsp; *
+&nbsp; */
+<b class="fc">&nbsp;public class ScoreCounter {</b>
+&nbsp;
+&nbsp;	private static class ScoreCounterHolder {
+<b class="fc">&nbsp;		private static final ScoreCounter scoreCounter = new ScoreCounter();</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public static ScoreCounter getInstance() {
+<b class="fc">&nbsp;		return ScoreCounterHolder.scoreCounter;</b>
+&nbsp;	}
+&nbsp;
+<b class="fc">&nbsp;	private long score = 0; // だ?</b>
+&nbsp;	private long bestScore; // 程蔼だ?
+&nbsp;
+<b class="fc">&nbsp;	private ScoreCounter() {</b>
+<b class="fc">&nbsp;		bestScore = -1;</b>
+&nbsp;		try {
+<b class="fc">&nbsp;			loadBestScore();</b>
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			e.printStackTrace();</b>
+<b class="fc">&nbsp;		}</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	// ??程蔼??
+&nbsp;	private void loadBestScore() throws Exception {
+<b class="fc">&nbsp;		File file = new File(Constant.SCORE_FILE_PATH);</b>
+<b class="fc">&nbsp;		if (file.exists()) {</b>
+<b class="fc">&nbsp;			DataInputStream dis = new DataInputStream(new FileInputStream(file));</b>
+<b class="fc">&nbsp;			bestScore = dis.readLong();</b>
+<b class="fc">&nbsp;			dis.close();</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	public void saveScore() {
+<b class="fc">&nbsp;		bestScore = Math.max(bestScore, getCurrentScore());</b>
+&nbsp;		try {
+<b class="fc">&nbsp;			File file = new File(Constant.SCORE_FILE_PATH);</b>
+<b class="fc">&nbsp;			DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));</b>
+<b class="fc">&nbsp;			dos.writeLong(bestScore);</b>
+<b class="fc">&nbsp;			dos.close();</b>
+<b class="nc">&nbsp;		} catch (Exception e) {</b>
+<b class="nc">&nbsp;			e.printStackTrace();</b>
+<b class="fc">&nbsp;		}</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public void score(Bird bird) {
+<b class="fc">&nbsp;		if (!bird.isDead()) {</b>
+<b class="fc">&nbsp;			MusicUtil.playScore();</b>
+<b class="fc">&nbsp;			score += 1;</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	public long getBestScore() {
+<b class="fc">&nbsp;		return bestScore;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public long getCurrentScore() {
+<b class="fc">&nbsp;		return score;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public void reset() {
+<b class="fc">&nbsp;		score = 0;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-16 19:07</div>
+</div>
+</body>
+</html>

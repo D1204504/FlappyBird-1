@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=x-windows-950"> 
+  <title>Coverage Report > GameUtil</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kingyu.flappybird.util</a>
+</div>
+
+<h1>Coverage Summary for Class: GameUtil (com.kingyu.flappybird.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kingyu.flappybird.util;
+&nbsp;
+&nbsp;import java.awt.*;
+&nbsp;import java.awt.image.BufferedImage;
+&nbsp;import java.io.FileInputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.awt.font.FontRenderContext;
+&nbsp;import java.awt.geom.AffineTransform;
+&nbsp;
+&nbsp;import javax.imageio.ImageIO;
+&nbsp;
+&nbsp;/**
+&nbsp; * ㄣ?村?いノㄣ常?
+&nbsp; *
+&nbsp; * @author Kingyu
+&nbsp; */
+&nbsp;public class GameUtil {
+&nbsp;
+&nbsp;    private GameUtil() {
+&nbsp;    } // ╬Τてňゎㄤ??ㄒて?
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ???よ猭
+&nbsp;     *
+&nbsp;     * @param imgPath ?隔?
+&nbsp;     * @return ??方
+&nbsp;     */
+&nbsp;    public static BufferedImage loadBufferedImage(String imgPath) {
+&nbsp;        try {
+<b class="fc">&nbsp;            return ImageIO.read(new FileInputStream(imgPath));</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ?ヴ種阀瞯阀瞯┦ㄆン琌?ネ
+&nbsp;     *
+&nbsp;     * @param numerator   だぃ0
+&nbsp;     * @param denominator だダぃ0
+&nbsp;     * @return 阀瞯┦ㄆン?ネtrue?false
+&nbsp;     */
+&nbsp;    public static boolean isInProbability(int numerator, int denominator) throws Exception {
+&nbsp;        // だだダぃ0
+<b class="nc">&nbsp;        if (numerator &lt;= 0 || denominator &lt;= 0) {</b>
+<b class="nc">&nbsp;            throw new Exception(&quot;?獶猭??&quot;);</b>
+&nbsp;        }
+&nbsp;        //だだダ﹚?ネ
+<b class="nc">&nbsp;        if (numerator &gt;= denominator) {</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return getRandomNumber(1, denominator + 1) &lt;= numerator;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ﹚????审?
+&nbsp;     *
+&nbsp;     * @param min ??程
+&nbsp;     * @param max ??程ぃ
+&nbsp;     * @return ????审?
+&nbsp;     */
+&nbsp;    public static int getRandomNumber(int min, int max) {
+<b class="nc">&nbsp;        return (int) (Math.random() * (max - min) + min);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * ?眔﹚才﹃﹚蔨?蔼
+&nbsp;     */
+&nbsp;    public static int getStringWidth(Font font, String str) {
+<b class="nc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
+<b class="nc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
+<b class="nc">&nbsp;        return (int) (font.getStringBounds(str, frc).getWidth());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static int getStringHeight(Font font, String str) {
+<b class="nc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
+<b class="nc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
+<b class="nc">&nbsp;        return (int) (font.getStringBounds(str, frc).getHeight());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     *
+&nbsp;     * @param image:??方
+&nbsp;     * @param xxГ?
+&nbsp;     * @param yyГ?
+&nbsp;     * @param g??
+&nbsp;     */
+&nbsp;    public static void drawImage(BufferedImage image, int x, int y, Graphics g) {
+<b class="nc">&nbsp;        g.drawImage(image, x, y, null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-16 19:07</div>
+</div>
+</body>
+</html>

@@ -51,4 +51,13 @@ class BirdTest {
         bird.deadBirdFall();
         assertEquals(Bird.BIRD_DEAD_FALL, bird.getState());
     }
+    @Test
+    void testFreeFall() {
+        bird.birdFall();
+        bird.deadBirdFall();
+        assertEquals(Bird.BIRD_DEAD_FALL, bird.getState());
+        bird.reset();
+        assertEquals(Bird.BIRD_NORMAL, bird.getState());
+    }
+
 }

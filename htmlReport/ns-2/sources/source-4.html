@@ -1,0 +1,333 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=x-windows-950"> 
+  <title>Coverage Report > GameElementLayer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kingyu.flappybird.component</a>
+</div>
+
+<h1>Coverage Summary for Class: GameElementLayer (com.kingyu.flappybird.component)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameElementLayer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    22.2%
+  </span>
+  <span class="absValue">
+    (2/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.7%
+  </span>
+  <span class="absValue">
+    (4/85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kingyu.flappybird.component;
+&nbsp;
+&nbsp;import java.awt.Graphics;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import com.kingyu.flappybird.util.Constant;
+&nbsp;import com.kingyu.flappybird.util.GameUtil;
+&nbsp;
+&nbsp;/**
+&nbsp; * 游?元素?，目前管理水管的生成??并?制容器中的水管
+&nbsp; *
+&nbsp; * @author Kingyu
+&nbsp; */
+&nbsp;
+&nbsp;public class GameElementLayer {
+&nbsp;    private final List&lt;Pipe&gt; pipes; // 水管的容器
+&nbsp;
+&nbsp;    // 构造器
+<b class="fc">&nbsp;    public GameElementLayer() {</b>
+<b class="fc">&nbsp;        pipes = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?制方法
+&nbsp;    public void draw(Graphics g, Bird bird) {
+&nbsp;        // 遍?水管容器，如果可???制，不可????
+<b class="nc">&nbsp;        for (int i = 0; i &lt; pipes.size(); i++) {</b>
+<b class="nc">&nbsp;            Pipe pipe = pipes.get(i);</b>
+<b class="nc">&nbsp;            if (pipe.isVisible()) {</b>
+<b class="nc">&nbsp;                pipe.draw(g, bird);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                Pipe remove = pipes.remove(i);</b>
+<b class="nc">&nbsp;                PipePool.giveBack(remove);</b>
+<b class="nc">&nbsp;                i--;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        // 碰撞??
+<b class="nc">&nbsp;        isCollideBird(bird);</b>
+<b class="nc">&nbsp;        pipeBornLogic(bird);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 添加水管的??： ?容器中添加的最后一?元素完全?示到屏幕后，添加下一?； 水管成?地相?地出?，空隙高度?窗口高度的1/6；
+&nbsp;     * 每?水管的?隔距离?屏幕高度的1/4； 水管的高度的取值范??窗口的[1/8~5/8]
+&nbsp;     */
+&nbsp;    public static final int VERTICAL_INTERVAL = Constant.FRAME_HEIGHT / 5;
+&nbsp;    public static final int HORIZONTAL_INTERVAL = Constant.FRAME_HEIGHT &gt;&gt; 2;
+&nbsp;    public static final int MIN_HEIGHT = Constant.FRAME_HEIGHT &gt;&gt; 3;
+&nbsp;    public static final int MAX_HEIGHT = ((Constant.FRAME_HEIGHT) &gt;&gt; 3) * 5;
+&nbsp;
+&nbsp;    private void pipeBornLogic(Bird bird) {
+<b class="nc">&nbsp;        if (bird.isDead()) {</b>
+&nbsp;            // ?死后不再添加水管
+&nbsp;            return;
+&nbsp;        }
+<b class="nc">&nbsp;        if (pipes.size() == 0) {</b>
+&nbsp;            // 若容器?空，?添加一?水管
+<b class="nc">&nbsp;            int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1); // ?机生成水管高度</b>
+&nbsp;
+<b class="nc">&nbsp;            Pipe top = PipePool.get(&quot;Pipe&quot;);</b>
+<b class="nc">&nbsp;            top.setAttribute(Constant.FRAME_WIDTH, -Constant.TOP_PIPE_LENGTHENING,</b>
+&nbsp;                    topHeight + Constant.TOP_PIPE_LENGTHENING, Pipe.TYPE_TOP_NORMAL, true);
+&nbsp;
+<b class="nc">&nbsp;            Pipe bottom = PipePool.get(&quot;Pipe&quot;);</b>
+<b class="nc">&nbsp;            bottom.setAttribute(Constant.FRAME_WIDTH, topHeight + VERTICAL_INTERVAL,</b>
+&nbsp;                    Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, Pipe.TYPE_BOTTOM_NORMAL, true);
+&nbsp;
+<b class="nc">&nbsp;            pipes.add(top);</b>
+<b class="nc">&nbsp;            pipes.add(bottom);</b>
+<b class="nc">&nbsp;        } else {</b>
+&nbsp;            // 判?最后一?水管是否完全?入游?窗口，若?入?添加水管
+<b class="nc">&nbsp;            Pipe lastPipe = pipes.get(pipes.size() - 1); // ?得容器中最后一?水管</b>
+<b class="nc">&nbsp;            int currentDistance = lastPipe.getX() - bird.getBirdX() + Bird.BIRD_WIDTH / 2; // 小?和最后一根水管的距离</b>
+<b class="nc">&nbsp;            final int SCORE_DISTANCE = Pipe.PIPE_WIDTH * 2 + HORIZONTAL_INTERVAL; // 小于得分距离?得分</b>
+<b class="nc">&nbsp;            if (lastPipe.isInFrame()) {</b>
+<b class="nc">&nbsp;                if (pipes.size() &gt;= PipePool.FULL_PIPE - 2</b>
+&nbsp;                        &amp;&amp; currentDistance &lt;= SCORE_DISTANCE + Pipe.PIPE_WIDTH * 3 / 2) {
+<b class="nc">&nbsp;                    ScoreCounter.getInstance().score(bird);</b>
+&nbsp;                }
+&nbsp;                try {
+<b class="nc">&nbsp;                    int currentScore = (int) ScoreCounter.getInstance().getCurrentScore() + 1; // ?取?前分?</b>
+&nbsp;                    // 移?水管刷新的概率??前分??增，?得分大于19后全部刷新移?水管
+<b class="nc">&nbsp;                    if (GameUtil.isInProbability(currentScore, 20)) {</b>
+<b class="nc">&nbsp;                        if (GameUtil.isInProbability(1, 4)) // 生成移?水管和移??浮水管的概率</b>
+<b class="nc">&nbsp;                            addMovingHoverPipe(lastPipe);</b>
+&nbsp;                        else
+<b class="nc">&nbsp;                            addMovingNormalPipe(lastPipe);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        if (GameUtil.isInProbability(1, 2)) // 生成?止普通水管和?止?浮水管的概率</b>
+<b class="nc">&nbsp;                            addNormalPipe(lastPipe);</b>
+&nbsp;                        else
+<b class="nc">&nbsp;                            addHoverPipe(lastPipe);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (Exception e) {</b>
+<b class="nc">&nbsp;                    e.printStackTrace();</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 添加普通水管
+&nbsp;     *
+&nbsp;     * @param lastPipe ?入最后一根水管以?取x坐?
+&nbsp;     */
+&nbsp;    private void addNormalPipe(Pipe lastPipe) {
+<b class="nc">&nbsp;        int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1); // ?机生成水管高度</b>
+<b class="nc">&nbsp;        int x = lastPipe.getX() + HORIZONTAL_INTERVAL; // 新水管的x坐? = 最后一?水管的x坐? + 水管的?隔</b>
+&nbsp;
+<b class="nc">&nbsp;        Pipe top = PipePool.get(&quot;Pipe&quot;); // ?水管?象池中?取?象</b>
+&nbsp;
+&nbsp;        // ?置x, y, height, type?性
+<b class="nc">&nbsp;        top.setAttribute(x, -Constant.TOP_PIPE_LENGTHENING, topHeight + Constant.TOP_PIPE_LENGTHENING,</b>
+&nbsp;                Pipe.TYPE_TOP_NORMAL, true);
+&nbsp;
+<b class="nc">&nbsp;        Pipe bottom = PipePool.get(&quot;Pipe&quot;);</b>
+<b class="nc">&nbsp;        bottom.setAttribute(x, topHeight + VERTICAL_INTERVAL, Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL,</b>
+&nbsp;                Pipe.TYPE_BOTTOM_NORMAL, true);
+&nbsp;
+<b class="nc">&nbsp;        pipes.add(top);</b>
+<b class="nc">&nbsp;        pipes.add(bottom);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 添加?浮水管
+&nbsp;     *
+&nbsp;     * @param lastPipe ?入最后一根水管以?取x坐?
+&nbsp;     */
+&nbsp;    private void addHoverPipe(Pipe lastPipe) {
+&nbsp;
+&nbsp;        // ?机生成水管高度,屏幕高度的[1/4,1/6]
+<b class="nc">&nbsp;        int topHoverHeight = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 6, Constant.FRAME_HEIGHT / 4);</b>
+<b class="nc">&nbsp;        int x = lastPipe.getX() + HORIZONTAL_INTERVAL; // 新水管的x坐? = 最后一?水管的x坐? + 水管的?隔</b>
+<b class="nc">&nbsp;        int y = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 12, Constant.FRAME_HEIGHT / 6); // ?机水管的y坐?，窗口的[1/6,1/12]</b>
+&nbsp;
+<b class="nc">&nbsp;        int type = Pipe.TYPE_HOVER_NORMAL;</b>
+&nbsp;
+&nbsp;        // 生成上部的?浮水管
+<b class="nc">&nbsp;        Pipe topHover = PipePool.get(&quot;Pipe&quot;);</b>
+<b class="nc">&nbsp;        topHover.setAttribute(x, y, topHoverHeight, type, true);</b>
+&nbsp;
+&nbsp;        // 生成下部的?浮水管
+<b class="nc">&nbsp;        int bottomHoverHeight = Constant.FRAME_HEIGHT - 2 * y - topHoverHeight - VERTICAL_INTERVAL;</b>
+<b class="nc">&nbsp;        Pipe bottomHover = PipePool.get(&quot;Pipe&quot;);</b>
+<b class="nc">&nbsp;        bottomHover.setAttribute(x, y + topHoverHeight + VERTICAL_INTERVAL, bottomHoverHeight, type, true);</b>
+&nbsp;
+<b class="nc">&nbsp;        pipes.add(topHover);</b>
+<b class="nc">&nbsp;        pipes.add(bottomHover);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 添加移?的?浮水管
+&nbsp;     *
+&nbsp;     * @param lastPipe ?入最后一根水管以?取x坐?
+&nbsp;     */
+&nbsp;    private void addMovingHoverPipe(Pipe lastPipe) {
+&nbsp;
+&nbsp;        // ?机生成水管高度,屏幕高度的[1/4,1/6]
+<b class="nc">&nbsp;        int topHoverHeight = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 6, Constant.FRAME_HEIGHT / 4);</b>
+<b class="nc">&nbsp;        int x = lastPipe.getX() + HORIZONTAL_INTERVAL; // 新水管的x坐? = 最后一?水管的x坐? + 水管的?隔</b>
+<b class="nc">&nbsp;        int y = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 12, Constant.FRAME_HEIGHT / 6); // ?机水管的y坐?，窗口的[1/6,1/12]</b>
+&nbsp;
+<b class="nc">&nbsp;        int type = Pipe.TYPE_HOVER_HARD;</b>
+&nbsp;
+&nbsp;        // 生成上部的?浮水管
+<b class="nc">&nbsp;        Pipe topHover = PipePool.get(&quot;MovingPipe&quot;);</b>
+<b class="nc">&nbsp;        topHover.setAttribute(x, y, topHoverHeight, type, true);</b>
+&nbsp;
+&nbsp;        // 生成下部的?浮水管
+<b class="nc">&nbsp;        int bottomHoverHeight = Constant.FRAME_HEIGHT - 2 * y - topHoverHeight - VERTICAL_INTERVAL;</b>
+<b class="nc">&nbsp;        Pipe bottomHover = PipePool.get(&quot;MovingPipe&quot;);</b>
+<b class="nc">&nbsp;        bottomHover.setAttribute(x, y + topHoverHeight + VERTICAL_INTERVAL, bottomHoverHeight, type, true);</b>
+&nbsp;
+<b class="nc">&nbsp;        pipes.add(topHover);</b>
+<b class="nc">&nbsp;        pipes.add(bottomHover);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 添加移?的普通水管
+&nbsp;     *
+&nbsp;     * @param lastPipe ?入最后一根水管以?取x坐?
+&nbsp;     */
+&nbsp;    private void addMovingNormalPipe(Pipe lastPipe) {
+<b class="nc">&nbsp;        int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1); // ?机生成水管高度</b>
+<b class="nc">&nbsp;        int x = lastPipe.getX() + HORIZONTAL_INTERVAL; // 新水管的x坐? = 最后一?水管的x坐? + 水管的?隔</b>
+&nbsp;
+<b class="nc">&nbsp;        Pipe top = PipePool.get(&quot;MovingPipe&quot;);</b>
+<b class="nc">&nbsp;        top.setAttribute(x, -Constant.TOP_PIPE_LENGTHENING, topHeight + Constant.TOP_PIPE_LENGTHENING,</b>
+&nbsp;                Pipe.TYPE_TOP_HARD, true);
+&nbsp;
+<b class="nc">&nbsp;        Pipe bottom = PipePool.get(&quot;MovingPipe&quot;);</b>
+<b class="nc">&nbsp;        bottom.setAttribute(x, topHeight + VERTICAL_INTERVAL, Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL,</b>
+&nbsp;                Pipe.TYPE_BOTTOM_HARD, true);
+&nbsp;
+<b class="nc">&nbsp;        pipes.add(top);</b>
+<b class="nc">&nbsp;        pipes.add(bottom);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 判?元素和小?是否?生碰撞
+&nbsp;     *
+&nbsp;     * @param bird ?入小??象
+&nbsp;     */
+&nbsp;    public void isCollideBird(Bird bird) {
+&nbsp;        // 若?已死?不再判?
+<b class="nc">&nbsp;        if (bird.isDead()) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        // 遍?水管容器
+<b class="nc">&nbsp;        for (Pipe pipe : pipes) {</b>
+&nbsp;            // 判?碰撞矩形是否有交集
+<b class="nc">&nbsp;            if (pipe.getPipeRect().intersects(bird.getBirdCollisionRect())) {</b>
+<b class="nc">&nbsp;                bird.deadBirdFall();</b>
+&nbsp;                return;
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 重置元素?
+&nbsp;    public void reset() {
+<b class="fc">&nbsp;        for (Pipe pipe : pipes) {</b>
+<b class="nc">&nbsp;            PipePool.giveBack(pipe);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="fc">&nbsp;        pipes.clear();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-16 19:07</div>
+</div>
+</body>
+</html>

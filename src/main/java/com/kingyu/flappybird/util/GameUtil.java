@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-
+import java.util.Random;
 import javax.imageio.ImageIO;
 
 /**
@@ -15,9 +15,13 @@ import javax.imageio.ImageIO;
  * @author Kingyu
  */
 public class GameUtil {
+    private static Random random = new Random();
 
-    private GameUtil() {
-    } // 私有化，防止其他类实例化此类
+    public static void setRandom(Random newRandom) {
+        random = newRandom;
+    }
+
+
 
     /**
      * 装载图片的方法
@@ -42,17 +46,13 @@ public class GameUtil {
      * @return 概率性事件发生返回true，否则返回false
      */
     public static boolean isInProbability(int numerator, int denominator) throws Exception {
-        // 分子分母不小于0
-        if (numerator <= 0 || denominator <= 0) {
+        if (numerator <= 0 || denominator <= 0 || numerator > denominator) {
             throw new Exception("传入了非法的参数");
         }
-        //分子大于分母，一定发生
-        if (numerator >= denominator) {
-            return true;
-        }
-
-        return getRandomNumber(1, denominator + 1) <= numerator;
+        return random.nextDouble() < (double) numerator / denominator;
     }
+
+
 
     /**
      * 返回指定区间的一个随机数

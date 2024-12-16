@@ -184,4 +184,18 @@ public class Pipe {
         return pipeRect;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+
+    public void reset() {
+        this.x = 0; // Reset position
+        this.y = 0;
+        this.height = 0; // Reset height
+        this.type = TYPE_TOP_NORMAL; // Reset type
+        this.visible = true; // Ensure visibility is reset
+        this.pipeRect.setBounds(0, 0, PIPE_WIDTH, 0); // Reset collision bounds
+    }
+
 }

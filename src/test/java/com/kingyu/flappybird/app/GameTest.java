@@ -24,7 +24,16 @@ public class GameTest {
     @Test
     public void testGameReset() {
         Game game = new Game(true); // 使用靜默模式
-        game.resetGame();
+        game.resetGame(); // 通過實例調用
+        assertEquals(Game.GAME_READY, Game.getGameState(), "重置後狀態應為準備");
+    }
+
+    @Test
+    public void testKeyListener() {
+        Game game = new Game(true); // 使用靜默模式
+        game.initGame(); // 測試初始化
+        assertEquals(Game.GAME_READY, Game.getGameState(), "初始化後狀態應為準備");
+        game.resetGame(); // 測試重置
         assertEquals(Game.GAME_READY, Game.getGameState(), "重置後狀態應為準備");
     }
 }

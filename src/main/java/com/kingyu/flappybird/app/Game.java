@@ -97,7 +97,7 @@ public class Game extends Frame {
     }
 
     // 初始化游戏中的各个对象
-    private void initGame() {
+   void initGame() {
         background = new GameBackground();
         gameElement = new GameElementLayer();
         foreground = new GameForeground();
