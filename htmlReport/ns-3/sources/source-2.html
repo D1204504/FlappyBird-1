@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    16.7%
+    88.9%
   </span>
   <span class="absValue">
-    (1/6)
+    (8/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    5.9%
+    80%
   </span>
   <span class="absValue">
-    (1/17)
+    (16/20)
   </span>
 </td>
 </tr>
@@ -83,7 +83,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import java.io.IOException;
 &nbsp;import java.awt.font.FontRenderContext;
 &nbsp;import java.awt.geom.AffineTransform;
-&nbsp;
+&nbsp;import java.util.Random;
 &nbsp;import javax.imageio.ImageIO;
 &nbsp;
 &nbsp;/**
@@ -91,10 +91,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp; *
 &nbsp; * @author Kingyu
 &nbsp; */
-&nbsp;public class GameUtil {
+<b class="nc">&nbsp;public class GameUtil {</b>
+<b class="fc">&nbsp;    private static Random random = new Random();</b>
 &nbsp;
-&nbsp;    private GameUtil() {
-&nbsp;    } // 私有化，防止其他??例化此?
+&nbsp;    public static void setRandom(Random newRandom) {
+<b class="fc">&nbsp;        random = newRandom;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
 &nbsp;
 &nbsp;    /**
 &nbsp;     * ???片的方法
@@ -119,17 +123,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @return 概率性事件?生返回true，否?返回false
 &nbsp;     */
 &nbsp;    public static boolean isInProbability(int numerator, int denominator) throws Exception {
-&nbsp;        // 分子分母不小于0
-<b class="nc">&nbsp;        if (numerator &lt;= 0 || denominator &lt;= 0) {</b>
-<b class="nc">&nbsp;            throw new Exception(&quot;?入了非法的??&quot;);</b>
+<b class="fc">&nbsp;        if (denominator &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;?入了非法的??&quot;); // Denominator must be greater than 0</b>
 &nbsp;        }
-&nbsp;        //分子大于分母，一定?生
-<b class="nc">&nbsp;        if (numerator &gt;= denominator) {</b>
-<b class="nc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        if (numerator &lt;= 0 || numerator &gt; denominator) { // Check for numerator == 0 as well</b>
+<b class="fc">&nbsp;            throw new Exception(&quot;?入了非法的??&quot;); // Numerator must be between 1 and denominator</b>
 &nbsp;        }
-&nbsp;
-<b class="nc">&nbsp;        return getRandomNumber(1, denominator + 1) &lt;= numerator;</b>
+<b class="fc">&nbsp;        return random.nextDouble() &lt; (double) numerator / denominator;</b>
 &nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 &nbsp;
 &nbsp;    /**
 &nbsp;     * 返回指定??的一??机?
@@ -139,22 +144,22 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @return ???的?机?
 &nbsp;     */
 &nbsp;    public static int getRandomNumber(int min, int max) {
-<b class="nc">&nbsp;        return (int) (Math.random() * (max - min) + min);</b>
+<b class="fc">&nbsp;        return (int) (Math.random() * (max - min) + min);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    /**
 &nbsp;     * ?得指定字符串在指定字体的?高
 &nbsp;     */
 &nbsp;    public static int getStringWidth(Font font, String str) {
-<b class="nc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
-<b class="nc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
-<b class="nc">&nbsp;        return (int) (font.getStringBounds(str, frc).getWidth());</b>
+<b class="fc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
+<b class="fc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
+<b class="fc">&nbsp;        return (int) (font.getStringBounds(str, frc).getWidth());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    public static int getStringHeight(Font font, String str) {
-<b class="nc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
-<b class="nc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
-<b class="nc">&nbsp;        return (int) (font.getStringBounds(str, frc).getHeight());</b>
+<b class="fc">&nbsp;        AffineTransform affinetransform = new AffineTransform();</b>
+<b class="fc">&nbsp;        FontRenderContext frc = new FontRenderContext(affinetransform, true, true);</b>
+<b class="fc">&nbsp;        return (int) (font.getStringBounds(str, frc).getHeight());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;
@@ -166,7 +171,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @param g：??
 &nbsp;     */
 &nbsp;    public static void drawImage(BufferedImage image, int x, int y, Graphics g) {
-<b class="nc">&nbsp;        g.drawImage(image, x, y, null);</b>
+<b class="fc">&nbsp;        g.drawImage(image, x, y, null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;}
@@ -193,7 +198,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

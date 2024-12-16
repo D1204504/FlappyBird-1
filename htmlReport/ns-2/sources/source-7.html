@@ -44,26 +44,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">MovingPipe</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/7)
+    (12/12)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    97.9%
   </span>
   <span class="absValue">
-    (0/40)
+    (46/47)
   </span>
 </td>
 </tr>
@@ -81,12 +81,6 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import com.kingyu.flappybird.util.Constant;
 &nbsp;
-&nbsp;/**
-&nbsp; * 移?水管?，?承Pipe?
-&nbsp; *
-&nbsp; * @author Kingyu
-&nbsp; */
-&nbsp;
 &nbsp;public class MovingPipe extends Pipe {
 &nbsp;
 &nbsp;    private int dealtY; // 移?水管的坐?
@@ -95,118 +89,115 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    public static final int DIR_UP = 0;
 &nbsp;    public static final int DIR_DOWN = 1;
 &nbsp;
-&nbsp;    // 构造器
-&nbsp;    public MovingPipe() {
-<b class="nc">&nbsp;        super();</b>
+&nbsp;    // 添加 getter 方法
+&nbsp;   public int getDirection() {
+<b class="fc">&nbsp;        return this.direction;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    /**
-&nbsp;     * ?置水管??
-&nbsp;     *
-&nbsp;     * @param x:x坐?
-&nbsp;     * @param y：y坐?
-&nbsp;     * @param height：水管高度
-&nbsp;     * @param type：水管?型
-&nbsp;     * @param visible：水管可?性
-&nbsp;     */
+&nbsp;    public int getY() {
+<b class="fc">&nbsp;        return this.y;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getHeight() {
+<b class="fc">&nbsp;        return this.height;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getType() {
+<b class="fc">&nbsp;        return this.type;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 重置方法
+&nbsp;    public void reset() {
+<b class="fc">&nbsp;        this.x = 0; // 重置位置</b>
+<b class="fc">&nbsp;        this.y = 0;</b>
+<b class="fc">&nbsp;        this.setVisible(true); // 重置?可?</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 构造器
+&nbsp;    public MovingPipe() {
+<b class="fc">&nbsp;        super();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?置水管??
 &nbsp;    public void setAttribute(int x, int y, int height, int type, boolean visible) {
-<b class="nc">&nbsp;        super.setAttribute(x, y, height, type, visible);</b>
-<b class="nc">&nbsp;        dealtY = 0;</b>
-<b class="nc">&nbsp;        direction = DIR_DOWN;</b>
-<b class="nc">&nbsp;        if (type == TYPE_TOP_HARD) {</b>
-<b class="nc">&nbsp;            direction = DIR_UP;</b>
+<b class="fc">&nbsp;        super.setAttribute(x, y, height, type, visible);</b>
+<b class="fc">&nbsp;        dealtY = 0;</b>
+<b class="fc">&nbsp;        direction = DIR_DOWN;</b>
+<b class="fc">&nbsp;        if (type == TYPE_TOP_HARD) {</b>
+<b class="fc">&nbsp;            direction = DIR_UP;</b>
 &nbsp;        }
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制方法
 &nbsp;    public void draw(Graphics g, Bird bird) {
-<b class="nc">&nbsp;        switch (type) {</b>
+<b class="fc">&nbsp;        switch (type) {</b>
 &nbsp;            case TYPE_HOVER_HARD:
-<b class="nc">&nbsp;                drawHoverHard(g);</b>
-<b class="nc">&nbsp;                break;</b>
+<b class="fc">&nbsp;                drawHoverHard(g);</b>
+<b class="fc">&nbsp;                break;</b>
 &nbsp;            case TYPE_TOP_HARD:
-<b class="nc">&nbsp;                drawTopHard(g);</b>
-<b class="nc">&nbsp;                break;</b>
+<b class="fc">&nbsp;                drawTopHard(g);</b>
+<b class="fc">&nbsp;                break;</b>
 &nbsp;            case TYPE_BOTTOM_HARD:
-<b class="nc">&nbsp;                drawBottomHard(g);</b>
+<b class="fc">&nbsp;                drawBottomHard(g);</b>
 &nbsp;                break;
-&nbsp;
 &nbsp;        }
 &nbsp;        // ?死后水管停止移?
-<b class="nc">&nbsp;        if (bird.isDead()) {</b>
+<b class="fc">&nbsp;        if (bird.isDead()) {</b>
 &nbsp;            return;
 &nbsp;        }
-<b class="nc">&nbsp;        movement();</b>
-&nbsp;
-&nbsp;        // ?制碰撞矩形
-&nbsp;//		g.setColor(Color.black);
-&nbsp;//		g.drawRect((int) pipeRect.getX(), (int) pipeRect.getY(), (int) pipeRect.getWidth(), (int) pipeRect.getHeight());
+<b class="fc">&nbsp;        movement();</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制移?的?浮水管
 &nbsp;    private void drawHoverHard(Graphics g) {
-&nbsp;        // 拼接的??
-<b class="nc">&nbsp;        int count = (height - 2 * PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1;</b>
-&nbsp;        // ?制水管的上?部
-<b class="nc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), y + dealtY, null);</b>
-&nbsp;        // ?制水管的主体
-<b class="nc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;            g.drawImage(imgs[0], x, y + dealtY + i * PIPE_HEIGHT + PIPE_HEAD_HEIGHT, null);</b>
+<b class="fc">&nbsp;        int count = (height - 2 * PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1;</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), y + dealtY, null);</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;            g.drawImage(imgs[0], x, y + dealtY + i * PIPE_HEIGHT + PIPE_HEAD_HEIGHT, null);</b>
 &nbsp;        }
-&nbsp;        // ?制水管的下底部
-<b class="nc">&nbsp;        int y = this.y + height - PIPE_HEAD_HEIGHT;</b>
-<b class="nc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), y + dealtY, null);</b>
+<b class="fc">&nbsp;        int y = this.y + height - PIPE_HEAD_HEIGHT;</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), y + dealtY, null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制?上往下的移?水管
 &nbsp;    private void drawTopHard(Graphics g) {
-&nbsp;        // 拼接的??
-<b class="nc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1; // 取整+1</b>
-&nbsp;        // ?制水管的主体
-<b class="nc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;            g.drawImage(imgs[0], x, y + dealtY + i * PIPE_HEIGHT, null);</b>
+<b class="fc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1;</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;            g.drawImage(imgs[0], x, y + dealtY + i * PIPE_HEIGHT, null);</b>
 &nbsp;        }
-&nbsp;        // ?制水管的?部
-<b class="nc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1),</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1),</b>
 &nbsp;                height - Constant.TOP_PIPE_LENGTHENING - PIPE_HEAD_HEIGHT + dealtY, null);
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制?下往上的移?水管
 &nbsp;    private void drawBottomHard(Graphics g) {
-&nbsp;        // 拼接的??
-<b class="nc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1;</b>
-&nbsp;        // ?制水管的主体
-<b class="nc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;            g.drawImage(imgs[0], x, Constant.FRAME_HEIGHT - PIPE_HEIGHT - i * PIPE_HEIGHT + dealtY, null);</b>
+<b class="fc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1;</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;            g.drawImage(imgs[0], x, Constant.FRAME_HEIGHT - PIPE_HEIGHT - i * PIPE_HEIGHT + dealtY, null);</b>
 &nbsp;        }
-&nbsp;        // ?制水管的?部
-<b class="nc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), Constant.FRAME_HEIGHT - height + dealtY, null);</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), Constant.FRAME_HEIGHT - height + dealtY, null);</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    /**
-&nbsp;     * 可?水管的????
-&nbsp;     */
-&nbsp;    private void movement() {
-&nbsp;        //x坐?的????与普通水管相同
-<b class="nc">&nbsp;        x -= speed;</b>
-<b class="nc">&nbsp;        pipeRect.x -= speed;</b>
-<b class="nc">&nbsp;        if (x &lt; -1 * PIPE_HEAD_WIDTH) {// 水管完全离?了窗口</b>
-<b class="nc">&nbsp;            visible = false;</b>
+&nbsp;    // 可?水管的????
+&nbsp;    public void movement() {
+<b class="fc">&nbsp;        x -= speed;</b>
+<b class="fc">&nbsp;        pipeRect.x -= speed;</b>
+<b class="fc">&nbsp;        if (x &lt; -PIPE_HEAD_WIDTH) { // 檢查是否超出屏幕</b>
+<b class="fc">&nbsp;            visible = false;</b>
 &nbsp;        }
 &nbsp;
-&nbsp;        //水管上下移?的??
-<b class="nc">&nbsp;        if (direction == DIR_DOWN) {</b>
-<b class="nc">&nbsp;            dealtY++;</b>
-<b class="nc">&nbsp;            if (dealtY &gt; MAX_DELTA) {</b>
+<b class="fc">&nbsp;        if (direction == DIR_DOWN) {</b>
+<b class="fc">&nbsp;            dealtY++;</b>
+<b class="fc">&nbsp;            if (dealtY &gt;= MAX_DELTA) { // 應該使用 &gt;= 而非 &gt;</b>
 <b class="nc">&nbsp;                direction = DIR_UP;</b>
 &nbsp;            }
 &nbsp;        } else {
-<b class="nc">&nbsp;            dealtY--;</b>
-<b class="nc">&nbsp;            if (dealtY &lt;= 0) {</b>
-<b class="nc">&nbsp;                direction = DIR_DOWN;</b>
+<b class="fc">&nbsp;            dealtY--;</b>
+<b class="fc">&nbsp;            if (dealtY &lt;= 0) { // 應該使用 &lt;= 而非 &lt;</b>
+<b class="fc">&nbsp;                direction = DIR_DOWN;</b>
 &nbsp;            }
 &nbsp;        }
-<b class="nc">&nbsp;        pipeRect.y = this.y + dealtY;</b>
+<b class="fc">&nbsp;        pipeRect.y = this.y + dealtY; // 更新碰撞矩形的 y 坐標</b>
 &nbsp;    }
 &nbsp;
 &nbsp;}
@@ -233,7 +224,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

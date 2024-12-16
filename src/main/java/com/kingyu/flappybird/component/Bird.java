@@ -102,7 +102,7 @@ public class Bird {
     private final int BOTTOM_BOUNDARY = Constant.FRAME_HEIGHT - GameBackground.GROUND_HEIGHT - (BIRD_HEIGHT / 2);
 
     // 小鸟的飞行逻辑
-    private void movement() {
+    public void movement() {
         // 翅膀状态，实现小鸟振翅飞行
         wingState++;
         image = birdImages[Math.min(state, BIRD_DEAD_FALL)][wingState / 10 % IMG_COUNT];

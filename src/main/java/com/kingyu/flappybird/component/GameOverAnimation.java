@@ -61,4 +61,8 @@ public class GameOverAnimation {
         if (flash == COUNT * 2) // 重置闪烁参数
             flash = 0;
     }
+
+    public boolean isAnimationFinished() {
+        return flash == 0;
+    }
 }

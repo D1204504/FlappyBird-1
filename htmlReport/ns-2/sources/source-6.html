@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    100%
   </span>
   <span class="absValue">
-    (1/2)
+    (3/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    17.2%
+    100%
   </span>
   <span class="absValue">
-    (5/29)
+    (30/30)
   </span>
 </td>
 </tr>
@@ -104,39 +104,43 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;    private int flash = 0; // ?片????</b>
 &nbsp;
 &nbsp;    public void draw(Graphics g, Bird bird) {
-<b class="nc">&nbsp;        int x = Constant.FRAME_WIDTH - overImg.getWidth() &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        int y = Constant.FRAME_HEIGHT / 4;</b>
-<b class="nc">&nbsp;        g.drawImage(overImg, x, y, null);</b>
+<b class="fc">&nbsp;        int x = Constant.FRAME_WIDTH - overImg.getWidth() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        int y = Constant.FRAME_HEIGHT / 4;</b>
+<b class="fc">&nbsp;        g.drawImage(overImg, x, y, null);</b>
 &nbsp;
 &nbsp;        // ?制?分牌
-<b class="nc">&nbsp;        x = Constant.FRAME_WIDTH - scoreImg.getWidth() &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        y = Constant.FRAME_HEIGHT / 3;</b>
-<b class="nc">&nbsp;        g.drawImage(scoreImg, x, y, null);</b>
+<b class="fc">&nbsp;        x = Constant.FRAME_WIDTH - scoreImg.getWidth() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        y = Constant.FRAME_HEIGHT / 3;</b>
+<b class="fc">&nbsp;        g.drawImage(scoreImg, x, y, null);</b>
 &nbsp;
 &nbsp;        // ?制本局的分?
-<b class="nc">&nbsp;        g.setColor(Color.white);</b>
-<b class="nc">&nbsp;        g.setFont(Constant.SCORE_FONT);</b>
-<b class="nc">&nbsp;        x = (Constant.FRAME_WIDTH - scoreImg.getWidth() / 2 &gt;&gt; 1) + SCORE_LOCATE;// 位置??</b>
-<b class="nc">&nbsp;        y += scoreImg.getHeight() &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        String str = Long.toString(bird.getCurrentScore());</b>
-<b class="nc">&nbsp;        x -= GameUtil.getStringWidth(Constant.SCORE_FONT, str) &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        y += GameUtil.getStringHeight(Constant.SCORE_FONT, str);</b>
-<b class="nc">&nbsp;        g.drawString(str, x, y);</b>
+<b class="fc">&nbsp;        g.setColor(Color.white);</b>
+<b class="fc">&nbsp;        g.setFont(Constant.SCORE_FONT);</b>
+<b class="fc">&nbsp;        x = (Constant.FRAME_WIDTH - scoreImg.getWidth() / 2 &gt;&gt; 1) + SCORE_LOCATE;// 位置??</b>
+<b class="fc">&nbsp;        y += scoreImg.getHeight() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        String str = Long.toString(bird.getCurrentScore());</b>
+<b class="fc">&nbsp;        x -= GameUtil.getStringWidth(Constant.SCORE_FONT, str) &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        y += GameUtil.getStringHeight(Constant.SCORE_FONT, str);</b>
+<b class="fc">&nbsp;        g.drawString(str, x, y);</b>
 &nbsp;
 &nbsp;        // ?制最高分?
-<b class="nc">&nbsp;        if (bird.getBestScore() &gt; 0) {</b>
-<b class="nc">&nbsp;            str = Long.toString(bird.getBestScore());</b>
-<b class="nc">&nbsp;            x = (Constant.FRAME_WIDTH + scoreImg.getWidth() / 2 &gt;&gt; 1) - SCORE_LOCATE;// 位置??</b>
-<b class="nc">&nbsp;            x -= GameUtil.getStringWidth(Constant.SCORE_FONT, str) &gt;&gt; 1;</b>
-<b class="nc">&nbsp;            g.drawString(str, x, y);</b>
+<b class="fc">&nbsp;        if (bird.getBestScore() &gt; 0) {</b>
+<b class="fc">&nbsp;            str = Long.toString(bird.getBestScore());</b>
+<b class="fc">&nbsp;            x = (Constant.FRAME_WIDTH + scoreImg.getWidth() / 2 &gt;&gt; 1) - SCORE_LOCATE;// 位置??</b>
+<b class="fc">&nbsp;            x -= GameUtil.getStringWidth(Constant.SCORE_FONT, str) &gt;&gt; 1;</b>
+<b class="fc">&nbsp;            g.drawString(str, x, y);</b>
 &nbsp;        }
 &nbsp;
 &nbsp;        // ?制??游?，?像??
-<b class="nc">&nbsp;        final int COUNT = 30; // ??周期</b>
-<b class="nc">&nbsp;        if (flash++ &gt; COUNT)</b>
-<b class="nc">&nbsp;            GameUtil.drawImage(againImg,Constant.FRAME_WIDTH - againImg.getWidth() &gt;&gt; 1, Constant.FRAME_HEIGHT / 5 * 3, g);</b>
-<b class="nc">&nbsp;        if (flash == COUNT * 2) // 重置????</b>
-<b class="nc">&nbsp;            flash = 0;</b>
+<b class="fc">&nbsp;        final int COUNT = 30; // ??周期</b>
+<b class="fc">&nbsp;        if (flash++ &gt; COUNT)</b>
+<b class="fc">&nbsp;            GameUtil.drawImage(againImg,Constant.FRAME_WIDTH - againImg.getWidth() &gt;&gt; 1, Constant.FRAME_HEIGHT / 5 * 3, g);</b>
+<b class="fc">&nbsp;        if (flash == COUNT * 2) // 重置????</b>
+<b class="fc">&nbsp;            flash = 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isAnimationFinished() {
+<b class="fc">&nbsp;        return flash == 0;</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -162,7 +166,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
  */
 public class Cloud {
 
-    private final int speed; // 速度
+    private int speed; // 速度
     private int x; // 坐标
     private final int y;
 
@@ -53,4 +53,15 @@ public class Cloud {
         return x < -1 * scaleImageWidth;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    // 设置云朵位置，用于测试
+    public void setAttribute(int x, int y) {
+        this.x = x;
+    }
+    public void setSpeed(int speed) {
+        this.speed = speed; // Allow speed adjustment
+    }
 }

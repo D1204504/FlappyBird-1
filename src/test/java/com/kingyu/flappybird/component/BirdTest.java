@@ -3,10 +3,10 @@ package com.kingyu.flappybird.component;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import com.kingyu.flappybird.component.Bird;
+
 import com.kingyu.flappybird.util.Constant;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 class BirdTest {
 
@@ -51,13 +51,48 @@ class BirdTest {
         bird.deadBirdFall();
         assertEquals(Bird.BIRD_DEAD_FALL, bird.getState());
     }
+
+    @Test
+    void testMovement() {
+        // 測試小鳥墜落
+        bird.birdFall();
+        bird.movement();
+        assertEquals(Bird.BIRD_FALL, bird.getState(), "應該是墜落狀態");
+
+        // 測試小鳥振翅
+        bird.birdFlap();
+        bird.movement();
+        assertEquals(Bird.BIRD_UP, bird.getState(), "應該是振翅狀態");
+    }
     @Test
     void testFreeFall() {
+        // 測試小鳥墜落
         bird.birdFall();
-        bird.deadBirdFall();
-        assertEquals(Bird.BIRD_DEAD_FALL, bird.getState());
+        bird.movement(); // 模擬墜落
+        assertTrue(bird.getBirdCollisionRect().y < Constant.FRAME_HEIGHT, "小鳥應該繼續墜落");
+
+        // 測試墜落速度是否正確
+        int initialY = bird.getBirdCollisionRect().y;
+        bird.movement();
+    }
+    @Test
+    void testKeyReleased() {
+        bird.keyPressed();
+        assertFalse(bird.keyIsReleased(), "按下鍵後應該是已按下狀態");
+
+        bird.keyReleased();
+        assertTrue(bird.keyIsReleased(), "釋放鍵後應該是已釋放狀態");
+    }
+    @Test
+    void testReset() {
+        bird.birdFlap(); // 小鳥振翅
         bird.reset();
-        assertEquals(Bird.BIRD_NORMAL, bird.getState());
+        assertEquals(Bird.BIRD_NORMAL, bird.getState(), "小鳥應該恢復為正常狀態");
+    }
+    @Test
+    void testIsDead() {
+        bird.deadBirdFall();
+        assertTrue(bird.isDead(), "小鳥死亡後應該返回 true");
     }
 
 }

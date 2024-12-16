@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    65%
+    80%
   </span>
   <span class="absValue">
-    (13/20)
+    (16/20)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    57.7%
+    79.5%
   </span>
   <span class="absValue">
-    (45/78)
+    (62/78)
   </span>
 </td>
 </tr>
@@ -154,19 +154,19 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    // ?制方法
 &nbsp;    public void draw(Graphics g) {
-<b class="nc">&nbsp;        movement();</b>
-<b class="nc">&nbsp;        int state_index = Math.min(state, BIRD_DEAD_FALL); // ?片?源索引</b>
+<b class="fc">&nbsp;        movement();</b>
+<b class="fc">&nbsp;        int state_index = Math.min(state, BIRD_DEAD_FALL); // ?片?源索引</b>
 &nbsp;        // 小?中心??算
-<b class="nc">&nbsp;        int halfImgWidth = birdImages[state_index][0].getWidth() &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        int halfImgHeight = birdImages[state_index][0].getHeight() &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        if (velocity &gt; 0)</b>
+<b class="fc">&nbsp;        int halfImgWidth = birdImages[state_index][0].getWidth() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        int halfImgHeight = birdImages[state_index][0].getHeight() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        if (velocity &gt; 0)</b>
 <b class="nc">&nbsp;            image = birdImages[BIRD_UP][0];</b>
-<b class="nc">&nbsp;        g.drawImage(image, x - halfImgWidth, y - halfImgHeight, null); // x坐?于窗口1/4?，y坐?位窗口中心</b>
+<b class="fc">&nbsp;        g.drawImage(image, x - halfImgWidth, y - halfImgHeight, null); // x坐?于窗口1/4?，y坐?位窗口中心</b>
 &nbsp;
-<b class="nc">&nbsp;        if (state == BIRD_DEAD)</b>
+<b class="fc">&nbsp;        if (state == BIRD_DEAD)</b>
 <b class="nc">&nbsp;            gameOverAnimation.draw(g, this);</b>
-<b class="nc">&nbsp;        else if (state != BIRD_DEAD_FALL)</b>
-<b class="nc">&nbsp;            drawScore(g);</b>
+<b class="fc">&nbsp;        else if (state != BIRD_DEAD_FALL)</b>
+<b class="fc">&nbsp;            drawScore(g);</b>
 &nbsp;        // ?制碰撞矩形
 &nbsp;//      g.setColor(Color.black);
 &nbsp;//      g.drawRect((int) birdRect.getX(), (int) birdRect.getY(), (int) birdRect.getWidth(), (int) birdRect.getHeight());
@@ -181,9 +181,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    // 小?的?行??
 &nbsp;    private void movement() {
 &nbsp;        // 翅膀??，??小?振翅?行
-<b class="nc">&nbsp;        wingState++;</b>
-<b class="nc">&nbsp;        image = birdImages[Math.min(state, BIRD_DEAD_FALL)][wingState / 10 % IMG_COUNT];</b>
-<b class="nc">&nbsp;        if (state == BIRD_FALL || state == BIRD_DEAD_FALL) {</b>
+<b class="fc">&nbsp;        wingState++;</b>
+<b class="fc">&nbsp;        image = birdImages[Math.min(state, BIRD_DEAD_FALL)][wingState / 10 % IMG_COUNT];</b>
+<b class="fc">&nbsp;        if (state == BIRD_FALL || state == BIRD_DEAD_FALL) {</b>
 <b class="nc">&nbsp;            freeFall();</b>
 <b class="nc">&nbsp;            if (birdCollisionRect.y &gt; BOTTOM_BOUNDARY) {</b>
 <b class="nc">&nbsp;                if (state == BIRD_FALL) {</b>
@@ -243,11 +243,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    // ?制??分?
 &nbsp;    private void drawScore(Graphics g) {
-<b class="nc">&nbsp;        g.setColor(Color.white);</b>
-<b class="nc">&nbsp;        g.setFont(Constant.CURRENT_SCORE_FONT);</b>
-<b class="nc">&nbsp;        String str = Long.toString(counter.getCurrentScore());</b>
-<b class="nc">&nbsp;        int x = Constant.FRAME_WIDTH - GameUtil.getStringWidth(Constant.CURRENT_SCORE_FONT, str) &gt;&gt; 1;</b>
-<b class="nc">&nbsp;        g.drawString(str, x, Constant.FRAME_HEIGHT / 10);</b>
+<b class="fc">&nbsp;        g.setColor(Color.white);</b>
+<b class="fc">&nbsp;        g.setFont(Constant.CURRENT_SCORE_FONT);</b>
+<b class="fc">&nbsp;        String str = Long.toString(counter.getCurrentScore());</b>
+<b class="fc">&nbsp;        int x = Constant.FRAME_WIDTH - GameUtil.getStringWidth(Constant.CURRENT_SCORE_FONT, str) &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        g.drawString(str, x, Constant.FRAME_HEIGHT / 10);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // 重置小?
@@ -316,7 +316,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

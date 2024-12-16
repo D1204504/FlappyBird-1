@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    100%
   </span>
   <span class="absValue">
-    (2/4)
+    (4/4)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    36.8%
+    100%
   </span>
   <span class="absValue">
-    (7/19)
+    (19/19)
   </span>
 </td>
 </tr>
@@ -113,29 +113,29 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;	// ?制方法
 &nbsp;	public void draw(Graphics g, Bird bird) {
 &nbsp;		// ?制背景色
-<b class="nc">&nbsp;		g.setColor(Constant.BG_COLOR);</b>
-<b class="nc">&nbsp;		g.fillRect(0, 0, Constant.FRAME_WIDTH, Constant.FRAME_HEIGHT);</b>
+<b class="fc">&nbsp;		g.setColor(Constant.BG_COLOR);</b>
+<b class="fc">&nbsp;		g.fillRect(0, 0, Constant.FRAME_WIDTH, Constant.FRAME_HEIGHT);</b>
 &nbsp;
 &nbsp;		// ?得背景?片的尺寸
-<b class="nc">&nbsp;		int imgWidth = BackgroundImg.getWidth();</b>
-<b class="nc">&nbsp;		int imgHeight = BackgroundImg.getHeight();</b>
+<b class="fc">&nbsp;		int imgWidth = BackgroundImg.getWidth();</b>
+<b class="fc">&nbsp;		int imgHeight = BackgroundImg.getHeight();</b>
 &nbsp;
-<b class="nc">&nbsp;		int count = Constant.FRAME_WIDTH / imgWidth + 2; // 根据窗口?度得到?片的?制次?</b>
-<b class="nc">&nbsp;		for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;			g.drawImage(BackgroundImg, imgWidth * i - layerX, Constant.FRAME_HEIGHT - imgHeight, null);</b>
+<b class="fc">&nbsp;		int count = Constant.FRAME_WIDTH / imgWidth + 2; // 根据窗口?度得到?片的?制次?</b>
+<b class="fc">&nbsp;		for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;			g.drawImage(BackgroundImg, imgWidth * i - layerX, Constant.FRAME_HEIGHT - imgHeight, null);</b>
 &nbsp;		}
 &nbsp;		
-<b class="nc">&nbsp;		if(bird.isDead()) {  //小?死亡?不再?制</b>
+<b class="fc">&nbsp;		if(bird.isDead()) {  //小?死亡?不再?制</b>
 &nbsp;			return;
 &nbsp;		}
-<b class="nc">&nbsp;		movement();</b>
+<b class="fc">&nbsp;		movement();</b>
 &nbsp;	}
 &nbsp;
 &nbsp;	// 背景?的????
 &nbsp;	private void movement() {
-<b class="nc">&nbsp;		layerX += speed;</b>
-<b class="nc">&nbsp;		if (layerX &gt; BackgroundImg.getWidth())</b>
-<b class="nc">&nbsp;			layerX = 0;</b>
+<b class="fc">&nbsp;		layerX += speed;</b>
+<b class="fc">&nbsp;		if (layerX &gt; BackgroundImg.getWidth())</b>
+<b class="fc">&nbsp;			layerX = 0;</b>
 &nbsp;	}
 &nbsp;}
 </code>
@@ -161,7 +161,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

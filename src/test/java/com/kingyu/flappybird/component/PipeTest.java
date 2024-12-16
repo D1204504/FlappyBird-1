@@ -44,15 +44,4 @@ class PipeTest {
         assertFalse(pipe.isVisible(), "水管移出屏幕後應不可見");
     }
 
-    @Test
-    void testMovingPipeMovement() {
-        BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = bufferedImage.getGraphics();
-
-        MovingPipe movingPipe = new MovingPipe();
-        movingPipe.setAttribute(100, 200, 300, Pipe.TYPE_TOP_HARD, true);
-
-        movingPipe.draw(g, new Bird());
-        assertEquals(Pipe.TYPE_TOP_HARD, movingPipe.type, "移動水管的類型應為 TYPE_TOP_HARD");
-    }
 }

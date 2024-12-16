@@ -17,7 +17,10 @@ import com.kingyu.flappybird.util.MusicUtil;
  */
 public class ScoreCounter {
 
-	private static class ScoreCounterHolder {
+    public static void setInstance(ScoreCounter scoreCounter) {
+    }
+
+    private static class ScoreCounterHolder {
 		private static final ScoreCounter scoreCounter = new ScoreCounter();
 	}
 

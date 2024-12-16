@@ -46,11 +46,16 @@ public class GameUtil {
      * @return 概率性事件发生返回true，否则返回false
      */
     public static boolean isInProbability(int numerator, int denominator) throws Exception {
-        if (numerator <= 0 || denominator <= 0 || numerator > denominator) {
-            throw new Exception("传入了非法的参数");
+        if (denominator <= 0) {
+            throw new Exception("传入了非法的参数"); // Denominator must be greater than 0
+        }
+        if (numerator <= 0 || numerator > denominator) { // Check for numerator == 0 as well
+            throw new Exception("传入了非法的参数"); // Numerator must be between 1 and denominator
         }
         return random.nextDouble() < (double) numerator / denominator;
     }
+
+
 
 
 

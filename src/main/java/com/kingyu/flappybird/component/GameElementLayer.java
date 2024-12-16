@@ -1,9 +1,9 @@
 package com.kingyu.flappybird.component;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
 import com.kingyu.flappybird.util.Constant;
 import com.kingyu.flappybird.util.GameUtil;
 
@@ -39,17 +39,7 @@ public class GameElementLayer {
         if (bird.isDead()) return;
 
         if (pipes.isEmpty()) {
-            int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1);
-            Pipe top = PipePool.get("Pipe");
-            top.setAttribute(Constant.FRAME_WIDTH, -Constant.TOP_PIPE_LENGTHENING,
-                    topHeight + Constant.TOP_PIPE_LENGTHENING, Pipe.TYPE_TOP_NORMAL, true);
-
-            Pipe bottom = PipePool.get("Pipe");
-            bottom.setAttribute(Constant.FRAME_WIDTH, topHeight + VERTICAL_INTERVAL,
-                    Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, Pipe.TYPE_BOTTOM_NORMAL, true);
-
-            pipes.add(top);
-            pipes.add(bottom);
+            generateInitialPipes();
         } else {
             Pipe lastPipe = pipes.get(pipes.size() - 1);
             int currentDistance = lastPipe.getX() - bird.getBirdX() + Bird.BIRD_WIDTH / 2;
@@ -60,99 +50,82 @@ public class GameElementLayer {
                         && currentDistance <= SCORE_DISTANCE + Pipe.PIPE_WIDTH * 3 / 2) {
                     ScoreCounter.getInstance().score(bird);
                 }
-                try {
-                    int currentScore = (int) ScoreCounter.getInstance().getCurrentScore() + 1;
-                    if (GameUtil.isInProbability(currentScore, 20)) {
-                        if (GameUtil.isInProbability(1, 4))
-                            addMovingHoverPipe(lastPipe);
-                        else
-                            addMovingNormalPipe(lastPipe);
-                    } else {
-                        if (GameUtil.isInProbability(1, 2))
-                            addNormalPipe(lastPipe);
-                        else
-                            addHoverPipe(lastPipe);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                addPipeLogic(lastPipe);
             }
         }
     }
 
-    private void addNormalPipe(Pipe lastPipe) {
+    private void generateInitialPipes() {
         int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1);
-        int x = lastPipe.getX() + HORIZONTAL_INTERVAL;
-
         Pipe top = PipePool.get("Pipe");
-        top.setAttribute(x, -Constant.TOP_PIPE_LENGTHENING, topHeight + Constant.TOP_PIPE_LENGTHENING,
-                Pipe.TYPE_TOP_NORMAL, true);
+        top.setAttribute(Constant.FRAME_WIDTH, -Constant.TOP_PIPE_LENGTHENING,
+                topHeight + Constant.TOP_PIPE_LENGTHENING, Pipe.TYPE_TOP_NORMAL, true);
 
         Pipe bottom = PipePool.get("Pipe");
-        bottom.setAttribute(x, topHeight + VERTICAL_INTERVAL, Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL,
-                Pipe.TYPE_BOTTOM_NORMAL, true);
+        bottom.setAttribute(Constant.FRAME_WIDTH, topHeight + VERTICAL_INTERVAL,
+                Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, Pipe.TYPE_BOTTOM_NORMAL, true);
 
         pipes.add(top);
         pipes.add(bottom);
     }
 
-    private void addHoverPipe(Pipe lastPipe) {
-        int topHoverHeight = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 6, Constant.FRAME_HEIGHT / 4);
-        int x = lastPipe.getX() + HORIZONTAL_INTERVAL;
-        int y = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 12, Constant.FRAME_HEIGHT / 6);
-
-        int type = Pipe.TYPE_HOVER_NORMAL;
-
-        Pipe topHover = PipePool.get("Pipe");
-        topHover.setAttribute(x, y, topHoverHeight, type, true);
-
-        int bottomHoverHeight = Constant.FRAME_HEIGHT - 2 * y - topHoverHeight - VERTICAL_INTERVAL;
-        Pipe bottomHover = PipePool.get("Pipe");
-        bottomHover.setAttribute(x, y + topHoverHeight + VERTICAL_INTERVAL, bottomHoverHeight, type, true);
-
-        pipes.add(topHover);
-        pipes.add(bottomHover);
+    private void addPipeLogic(Pipe lastPipe) {
+        try {
+            int currentScore = (int) ScoreCounter.getInstance().getCurrentScore() + 1;
+            if (GameUtil.isInProbability(currentScore, 20)) {
+                if (GameUtil.isInProbability(1, 4))
+                    addMovingHoverPipe(lastPipe);
+                else
+                    addMovingNormalPipe(lastPipe);
+            } else {
+                if (GameUtil.isInProbability(1, 2))
+                    addNormalPipe(lastPipe);
+                else
+                    addHoverPipe(lastPipe);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void addMovingHoverPipe(Pipe lastPipe) {
-        int topHoverHeight = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 6, Constant.FRAME_HEIGHT / 4);
-        int x = lastPipe.getX() + HORIZONTAL_INTERVAL;
-        int y = GameUtil.getRandomNumber(Constant.FRAME_HEIGHT / 12, Constant.FRAME_HEIGHT / 6);
+    private void addNormalPipe(Pipe lastPipe) {
+        createPipe(lastPipe, Pipe.TYPE_TOP_NORMAL, Pipe.TYPE_BOTTOM_NORMAL);
+    }
 
-        int type = Pipe.TYPE_HOVER_HARD;
-
-        Pipe topHover = PipePool.get("MovingPipe");
-        topHover.setAttribute(x, y, topHoverHeight, type, true);
-
-        int bottomHoverHeight = Constant.FRAME_HEIGHT - 2 * y - topHoverHeight - VERTICAL_INTERVAL;
-        Pipe bottomHover = PipePool.get("MovingPipe");
-        bottomHover.setAttribute(x, y + topHoverHeight + VERTICAL_INTERVAL, bottomHoverHeight, type, true);
-
-        pipes.add(topHover);
-        pipes.add(bottomHover);
+    private void addHoverPipe(Pipe lastPipe) {
+        createPipe(lastPipe, Pipe.TYPE_HOVER_NORMAL, Pipe.TYPE_HOVER_NORMAL);
     }
 
     private void addMovingNormalPipe(Pipe lastPipe) {
+        createPipe(lastPipe, Pipe.TYPE_TOP_HARD, Pipe.TYPE_BOTTOM_HARD);
+    }
+
+    private void addMovingHoverPipe(Pipe lastPipe) {
+        createPipe(lastPipe, Pipe.TYPE_HOVER_HARD, Pipe.TYPE_HOVER_HARD);
+    }
+
+    private void createPipe(Pipe lastPipe, int topType, int bottomType) {
         int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1);
         int x = lastPipe.getX() + HORIZONTAL_INTERVAL;
 
-        Pipe top = PipePool.get("MovingPipe");
-        top.setAttribute(x, -Constant.TOP_PIPE_LENGTHENING, topHeight + Constant.TOP_PIPE_LENGTHENING,
-                Pipe.TYPE_TOP_HARD, true);
+        Pipe top = PipePool.get("Pipe");
+        top.setAttribute(x, -Constant.TOP_PIPE_LENGTHENING, topHeight + Constant.TOP_PIPE_LENGTHENING, topType, true);
 
-        Pipe bottom = PipePool.get("MovingPipe");
-        bottom.setAttribute(x, topHeight + VERTICAL_INTERVAL, Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL,
-                Pipe.TYPE_BOTTOM_HARD, true);
+        Pipe bottom = PipePool.get("Pipe");
+        bottom.setAttribute(x, topHeight + VERTICAL_INTERVAL, Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, bottomType, true);
 
         pipes.add(top);
         pipes.add(bottom);
     }
 
     public void isCollideBird(Bird bird) {
-        if (bird.isDead()) return;
+        if (bird == null || bird.isDead()) return;
 
         for (Pipe pipe : pipes) {
-            if (pipe.getPipeRect().intersects(bird.getBirdCollisionRect())) {
+            Rectangle pipeRect = pipe.getPipeRect();
+            Rectangle birdRect = bird.getBirdCollisionRect();
+
+            if (pipeRect != null && birdRect != null && pipeRect.intersects(birdRect)) {
                 bird.deadBirdFall();
                 return;
             }
@@ -161,8 +134,14 @@ public class GameElementLayer {
 
     public void reset() {
         for (Pipe pipe : pipes) {
-            PipePool.giveBack(pipe);
+            if (pipe != null) {
+                PipePool.giveBack(pipe);
+            }
         }
         pipes.clear();
+    }
+
+    public Collection<Pipe> getPipes() {
+        return pipes;
     }
 }

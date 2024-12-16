@@ -1,57 +1,54 @@
 package com.kingyu.flappybird.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class CloudTest {
 
+    private Cloud cloud;
+    private Graphics graphics;
+
+    @BeforeEach
+    void setUp() {
+        // Create a mock Graphics object
+        BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+        graphics = bufferedImage.getGraphics();
+
+        // Initialize a Cloud object
+        cloud = new Cloud(mock(BufferedImage.class), 100, 50);
+    }
+
+    @Test
+    void testCloudDraw() {
+        Bird bird = mock(Bird.class);
+        when(bird.isDead()).thenReturn(false);
+
+        int initialX = cloud.getX();
+
+        // Simulate drawing the cloud
+        cloud.draw(graphics, bird);
+
+        // Verify that the x-coordinate decreases by the cloud's speed
+        assertTrue(cloud.getX() < initialX, "Cloud X-coordinate should decrease after drawing");
+    }
+
+
     @Test
     void testCloudMovement() {
-        // 模擬 BufferedImage 和 Graphics 對象
-        BufferedImage mockImg = mock(BufferedImage.class);
-        BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = bufferedImage.getGraphics();
+        Bird bird = mock(Bird.class);
 
-        // 初始化 Cloud 和 Bird
-        Cloud cloud = new Cloud(mockImg, 100, 50);
-        Bird bird = new Bird();
-
-        // 測試 draw 方法
-        cloud.draw(g, bird); // 傳入模擬的 Graphics 和 Bird
-        assertFalse(cloud.isOutFrame(), "雲朵應該還在畫面內");
+        // Simulate movement
+        cloud.draw(graphics, bird);
+        assertTrue(cloud.getX() < 100, "Cloud X-coordinate should decrease after movement");
     }
 
     @Test
-    void testBackgroundMovement() {
-        // 模擬 BufferedImage 和 Graphics 對象
-        BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = bufferedImage.getGraphics();
-
-        // 測試 GameBackground
-        GameBackground bg = new GameBackground();
-        Bird bird = new Bird();
-
-        // 測試 draw 方法
-        bg.draw(g, bird); // 傳入模擬的 Graphics 和 Bird
-    }
-    @Test
-    void testForegroundLogic() {
-        // 模擬 BufferedImage 和 Graphics 對象
-        BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = bufferedImage.getGraphics();
-
-        // 測試 GameForeground
-        GameForeground fg = new GameForeground();
-        Bird bird = new Bird();
-
-        // 測試 draw 方法
-        fg.draw(g, bird); // 傳入模擬的 Graphics 和 Bird
+    void testCloudOutOfFrame() {
+        cloud.setAttribute(-50, 50); // Set cloud position outside the frame
+        assertTrue(cloud.isOutFrame(), "Cloud should be marked as out of frame when off-screen");
     }
 }
-
-
-

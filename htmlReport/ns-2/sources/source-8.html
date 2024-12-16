@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    69.2%
+    93.3%
   </span>
   <span class="absValue">
-    (9/13)
+    (14/15)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    60.4%
+    88.3%
   </span>
   <span class="absValue">
-    (32/53)
+    (53/60)
   </span>
 </td>
 </tr>
@@ -167,13 +167,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    // ?制方法
 &nbsp;    public void draw(Graphics g, Bird bird) {
 <b class="fc">&nbsp;        if (g != null) { // 如果 g ? null，跳??制部分</b>
-<b class="nc">&nbsp;            switch (type) {</b>
+<b class="fc">&nbsp;            switch (type) {</b>
 &nbsp;                case TYPE_TOP_NORMAL:
-<b class="nc">&nbsp;                    drawTopNormal(g);</b>
-<b class="nc">&nbsp;                    break;</b>
+<b class="fc">&nbsp;                    drawTopNormal(g);</b>
+<b class="fc">&nbsp;                    break;</b>
 &nbsp;                case TYPE_BOTTOM_NORMAL:
-<b class="nc">&nbsp;                    drawBottomNormal(g);</b>
-<b class="nc">&nbsp;                    break;</b>
+<b class="fc">&nbsp;                    drawBottomNormal(g);</b>
+<b class="fc">&nbsp;                    break;</b>
 &nbsp;                case TYPE_HOVER_NORMAL:
 <b class="nc">&nbsp;                    drawHoverNormal(g);</b>
 &nbsp;                    break;
@@ -193,27 +193,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    // ?制?上往下的普通水管
 &nbsp;    private void drawTopNormal(Graphics g) {
 &nbsp;        // 拼接的??
-<b class="nc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1; // 取整+1</b>
+<b class="fc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT) / PIPE_HEIGHT + 1; // 取整+1</b>
 &nbsp;        // ?制水管的主体
-<b class="nc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;            g.drawImage(imgs[0], x, y + i * PIPE_HEIGHT, null);</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;            g.drawImage(imgs[0], x, y + i * PIPE_HEIGHT, null);</b>
 &nbsp;        }
 &nbsp;        // ?制水管的?部
-<b class="nc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1),</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[1], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1),</b>
 &nbsp;                height - Constant.TOP_PIPE_LENGTHENING - PIPE_HEAD_HEIGHT, null); // 水管?部与水管主体的?度不同，x坐?需要?理
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制?下往上的普通水管
 &nbsp;    private void drawBottomNormal(Graphics g) {
 &nbsp;        // 拼接的??
-<b class="nc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT - Constant.GROUND_HEIGHT) / PIPE_HEIGHT + 1;</b>
+<b class="fc">&nbsp;        int count = (height - PIPE_HEAD_HEIGHT - Constant.GROUND_HEIGHT) / PIPE_HEIGHT + 1;</b>
 &nbsp;        // ?制水管的主体
-<b class="nc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
-<b class="nc">&nbsp;            g.drawImage(imgs[0], x, Constant.FRAME_HEIGHT - PIPE_HEIGHT - Constant.GROUND_HEIGHT - i * PIPE_HEIGHT,</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc">&nbsp;            g.drawImage(imgs[0], x, Constant.FRAME_HEIGHT - PIPE_HEIGHT - Constant.GROUND_HEIGHT - i * PIPE_HEIGHT,</b>
 &nbsp;                    null);
 &nbsp;        }
 &nbsp;        // ?制水管的?部
-<b class="nc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), Constant.FRAME_HEIGHT - height, null);</b>
+<b class="fc">&nbsp;        g.drawImage(imgs[2], x - ((PIPE_HEAD_WIDTH - width) &gt;&gt; 1), Constant.FRAME_HEIGHT - height, null);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?制?浮的普通水管
@@ -248,7 +248,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;     * @return 若完全出??返回true，否?返回false
 &nbsp;     */
 &nbsp;    public boolean isInFrame() {
-<b class="nc">&nbsp;        return x + width &gt; 0 &amp;&amp; x &lt; Constant.FRAME_WIDTH;</b>
+<b class="fc">&nbsp;        return x + width &gt; 0 &amp;&amp; x &lt; Constant.FRAME_WIDTH;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    // ?取水管的x坐?
@@ -259,6 +259,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    // ?取水管的碰撞矩形
 &nbsp;    public Rectangle getPipeRect() {
 <b class="fc">&nbsp;        return pipeRect;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setVisible(boolean visible) {
+<b class="fc">&nbsp;        this.visible = visible;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void reset() {
+<b class="fc">&nbsp;        this.x = 0; // Reset position</b>
+<b class="fc">&nbsp;        this.y = 0;</b>
+<b class="fc">&nbsp;        this.height = 0; // Reset height</b>
+<b class="fc">&nbsp;        this.type = TYPE_TOP_NORMAL; // Reset type</b>
+<b class="fc">&nbsp;        this.visible = true; // Ensure visibility is reset</b>
+<b class="fc">&nbsp;        this.pipeRect.setBounds(0, 0, PIPE_WIDTH, 0); // Reset collision bounds</b>
 &nbsp;    }
 &nbsp;
 &nbsp;}
@@ -285,7 +299,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>

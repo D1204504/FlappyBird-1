@@ -44,26 +44,26 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">PipePool</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    83.3%
   </span>
   <span class="absValue">
-    (0/4)
+    (5/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    76.7%
   </span>
   <span class="absValue">
-    (0/22)
+    (23/30)
   </span>
 </td>
 </tr>
@@ -82,66 +82,64 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import com.kingyu.flappybird.util.Constant;
 &nbsp;
-&nbsp;/**
-&nbsp; * 水管?象池
-&nbsp; * ?了避免反复地?建和???象，使用?象池?提前?建好一些?象，使用???象池中?得，使用完后??
-&nbsp; * 
-&nbsp; * @author Kingyu
-&nbsp; *
-&nbsp; */
+&nbsp;
 <b class="nc">&nbsp;public class PipePool {</b>
-<b class="nc">&nbsp;	private static final List&lt;Pipe&gt; pool = new ArrayList&lt;&gt;(); // 池中?象的容器</b>
-<b class="nc">&nbsp;	private static final List&lt;MovingPipe&gt; movingPool = new ArrayList&lt;&gt;(); // 池中?象的容器</b>
-&nbsp;	public static final int MAX_PIPE_COUNT = 30; // ?象池中?象的最大??，自行定?
-<b class="nc">&nbsp;	public static final int FULL_PIPE = (Constant.FRAME_WIDTH</b>
-&nbsp;			/ (Pipe.PIPE_HEAD_WIDTH + GameElementLayer.HORIZONTAL_INTERVAL) + 2) * 2;
+<b class="fc">&nbsp;	private static final List&lt;Pipe&gt; pool = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;	private static final List&lt;MovingPipe&gt; movingPool = new ArrayList&lt;&gt;();</b>
+&nbsp;	public static final int MAX_PIPE_COUNT = 30;
 &nbsp;
 &nbsp;	static {
-<b class="nc">&nbsp;		for (int i = 0; i &lt; PipePool.FULL_PIPE; i++) {</b>
-<b class="nc">&nbsp;			pool.add(new Pipe());</b>
+<b class="fc">&nbsp;		for (int i = 0; i &lt; MAX_PIPE_COUNT; i++) { // 确保至少有 MAX_PIPE_COUNT ?象</b>
+<b class="fc">&nbsp;			pool.add(new Pipe());</b>
 &nbsp;		}
-<b class="nc">&nbsp;		for (int i = 0; i &lt; PipePool.FULL_PIPE; i++) {</b>
-<b class="nc">&nbsp;			movingPool.add(new MovingPipe());</b>
+<b class="fc">&nbsp;		for (int i = 0; i &lt; MAX_PIPE_COUNT; i++) {</b>
+<b class="fc">&nbsp;			movingPool.add(new MovingPipe());</b>
+&nbsp;		}
+<b class="fc">&nbsp;		System.out.println(&quot;PipePool initialized with size: &quot; + pool.size());</b>
+<b class="fc">&nbsp;		System.out.println(&quot;MovingPipePool initialized with size: &quot; + movingPool.size());</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public static void initialize() {
+<b class="fc">&nbsp;		for (int i = 0; i &lt; MAX_PIPE_COUNT; i++) {</b>
+<b class="fc">&nbsp;			pool.add(new Pipe());</b>
+&nbsp;		}
+<b class="fc">&nbsp;		for (int i = 0; i &lt; MAX_PIPE_COUNT; i++) {</b>
+<b class="fc">&nbsp;			movingPool.add(new MovingPipe());</b>
 &nbsp;		}
 &nbsp;	}
 &nbsp;
-&nbsp;	/**
-&nbsp;	 * ??象池中?取一??象
-&nbsp;	 * 
-&nbsp;	 * @return ?入?象的?型，以判??哪??象池中?取
-&nbsp;	 */
+&nbsp;	public static void clear() {
+<b class="fc">&nbsp;		pool.clear();</b>
+<b class="fc">&nbsp;		movingPool.clear();</b>
+&nbsp;	}
 &nbsp;	public static Pipe get(String className) {
-<b class="nc">&nbsp;		if (&quot;Pipe&quot;.equals(className)) {</b>
-<b class="nc">&nbsp;			int size = pool.size();</b>
-<b class="nc">&nbsp;			if (size &gt; 0) {</b>
-<b class="nc">&nbsp;				return pool.remove(size - 1); // 移除并返回最后一?</b>
-&nbsp;			} else {
-<b class="nc">&nbsp;				return new Pipe(); // 空?象池，返回一?新?象</b>
+<b class="fc">&nbsp;		if (&quot;Pipe&quot;.equals(className)) {</b>
+<b class="fc">&nbsp;			if (pool.isEmpty()) {</b>
+<b class="fc">&nbsp;				return null;</b>
+&nbsp;			}
+<b class="fc">&nbsp;			return pool.remove(pool.size() - 1);</b>
+&nbsp;		} else {
+<b class="nc">&nbsp;			if (movingPool.isEmpty()) {</b>
+<b class="nc">&nbsp;				return null;</b>
+&nbsp;			}
+<b class="nc">&nbsp;			return movingPool.remove(movingPool.size() - 1);</b>
+&nbsp;		}
+&nbsp;	}
+&nbsp;
+&nbsp;	public static void giveBack(Pipe pipe) {
+<b class="fc">&nbsp;		pipe.reset(); // Reset the pipe before returning it to the pool</b>
+<b class="fc">&nbsp;		if (pipe instanceof MovingPipe) {</b>
+<b class="nc">&nbsp;			if (movingPool.size() &lt; MAX_PIPE_COUNT) {</b>
+<b class="nc">&nbsp;				movingPool.add((MovingPipe) pipe);</b>
+<b class="nc">&nbsp;				System.out.println(&quot;Returned MovingPipe to pool, new size: &quot; + movingPool.size());</b>
 &nbsp;			}
 &nbsp;		} else {
-<b class="nc">&nbsp;			int size = movingPool.size();</b>
-<b class="nc">&nbsp;			if (size &gt; 0) {</b>
-<b class="nc">&nbsp;				return movingPool.remove(size - 1); // 移除并返回最后一?</b>
-&nbsp;			} else {
-<b class="nc">&nbsp;				return new MovingPipe(); // 空?象池，返回一?新?象</b>
+<b class="fc">&nbsp;			if (pool.size() &lt; MAX_PIPE_COUNT) {</b>
+<b class="fc">&nbsp;				pool.add(pipe);</b>
+<b class="fc">&nbsp;				System.out.println(&quot;Returned Pipe to pool, new size: &quot; + pool.size());</b>
 &nbsp;			}
 &nbsp;		}
-&nbsp;	}
 &nbsp;
-&nbsp;	/**
-&nbsp;	 * ???象?容器
-&nbsp;	 */
-&nbsp;	public static void giveBack(Pipe pipe) {
-&nbsp;		//判??的?型
-<b class="nc">&nbsp;		if(pipe.getClass() == Pipe.class) {</b>
-<b class="nc">&nbsp;			if (pool.size() &lt; MAX_PIPE_COUNT) {</b>
-<b class="nc">&nbsp;				pool.add(pipe);</b>
-&nbsp;			}
-&nbsp;		}else {
-<b class="nc">&nbsp;			if (movingPool.size() &lt; MAX_PIPE_COUNT) {</b>
-<b class="nc">&nbsp;				movingPool.add((MovingPipe)pipe);</b>
-&nbsp;			}
-&nbsp;		}
 &nbsp;	}
 &nbsp;}
 </code>
@@ -167,7 +165,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-12-16 19:07</div>
+    <div style="float:right;">generated on 2024-12-17 00:56</div>
 </div>
 </body>
 </html>
