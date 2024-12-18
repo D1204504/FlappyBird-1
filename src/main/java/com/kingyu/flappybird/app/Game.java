@@ -19,7 +19,6 @@ import java.awt.image.BufferedImage;
  * @author Kingyu
  */
 public class Game extends Frame {
-    private static final long serialVersionUID = 1L; // 保持版本的兼容性
 
     private static int gameState; // 游戏状态
     public static final int GAME_READY = 0; // 游戏未开始

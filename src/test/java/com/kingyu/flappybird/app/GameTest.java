@@ -1,7 +1,7 @@
 package com.kingyu.flappybird.app;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
-import com.kingyu.flappybird.component.*;
+import com.kingyu.flappybird.util.ExitManager;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -11,11 +11,20 @@ import java.awt.event.WindowAdapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class GameTest {
 
     // ====== 基本遊戲邏輯測試 ======
-
+    @BeforeEach
+    void setUp() {
+        // 每次測試前重置 ExitManager 狀態
+        ExitManager.reset();
+        ExitManager.setExitHandler(status -> {
+            throw new UnsupportedOperationException("Mocked System.exit called with status: " + status);
+        });
+    }
     @Test
     void testGameInitialization() {
         Game game = new Game(true); // 靜默模式
@@ -176,25 +185,37 @@ public class GameTest {
     }
 
     // ====== 系統退出測試 ======
-
     @Test
-    void testWindowClosing() throws Exception {
-        Game game = new Game(true); // 靜默模式
-        WindowEvent mockEvent = mock(WindowEvent.class);
+    void testWindowClosing() {
+        // 初始化靜默模式的 Game
+        Game game = new Game(true);
 
-        // 手動添加 WindowListener（如果在靜默模式下未初始化）
+        // 添加 WindowListener
         game.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+                ExitManager.exit(0);
             }
         });
 
-        // 使用 SystemLambda 捕獲 System.exit
-        int statusCode = SystemLambda.catchSystemExit(() -> {
-            game.getWindowListeners()[0].windowClosing(mockEvent);
+        // 設置 ExitManager 處理器模擬 System.exit
+        ExitManager.setExitHandler(status -> {
+            throw new UnsupportedOperationException("Mocked System.exit called with status " + status);
         });
 
-        assertEquals(0, statusCode, "應該觸發 System.exit(0)");
+        // 模擬窗口關閉事件
+        Window mockWindow = new Frame(); // 模擬一個窗口
+        WindowEvent event = new WindowEvent(mockWindow, WindowEvent.WINDOW_CLOSING);
+
+        // 觸發 windowClosing 事件並捕獲異常
+        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
+            game.getWindowListeners()[0].windowClosing(event);
+        });
+
+        // 驗證結果
+        assertTrue(exception.getMessage().contains("Mocked System.exit called"), "應該模擬 System.exit 的行為");
+        assertTrue(ExitManager.isExitCalled(), "ExitManager 應該標記 exit 已被調用");
     }
+
+
 }
