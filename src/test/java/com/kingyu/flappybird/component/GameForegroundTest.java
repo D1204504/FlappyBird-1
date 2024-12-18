@@ -71,16 +71,19 @@ class GameForegroundTest {
     void testCloudRemoval() {
         // Mock a cloud that is out of frame
         Cloud outOfFrameCloud = mock(Cloud.class);
-        when(outOfFrameCloud.isOutFrame()).thenReturn(true);
+        when(outOfFrameCloud.isOutFrame()).thenReturn(true); // 模拟云朵超出屏幕
 
         // Add the cloud and simulate the draw logic
         foreground.getClouds().add(outOfFrameCloud);
+
+        // Adjust the time to ensure `cloudBornLogic` is triggered
         foreground.setTime(System.currentTimeMillis() - 200);
         foreground.draw(graphics, bird);
 
         // Assert that the out-of-frame cloud is removed
-        assertTrue(foreground.getClouds().isEmpty(), "Out-of-frame clouds should be removed");
+        assertTrue(foreground.getClouds().isEmpty(), "超出屏幕的云朵应被移除");
     }
+
 
     @Test
     void testEdgeCases() {

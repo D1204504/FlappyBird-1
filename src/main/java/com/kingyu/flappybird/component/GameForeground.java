@@ -33,11 +33,12 @@ public class GameForeground {
 
     // 绘制方法
     public void draw(Graphics g, Bird bird) {
-        cloudBornLogic();
+        cloudBornLogic(); // 先更新云朵逻辑
         for (Cloud cloud : clouds) {
-            cloud.draw(g, bird);
+            cloud.draw(g, bird); // 再绘制云朵
         }
     }
+
 
     // 云朵的控制逻辑
     private void cloudBornLogic() {

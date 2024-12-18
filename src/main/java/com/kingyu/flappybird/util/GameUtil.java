@@ -30,13 +30,25 @@ public class GameUtil {
      * @return 图片资源
      */
     public static BufferedImage loadBufferedImage(String imgPath) {
-        try {
-            return ImageIO.read(new FileInputStream(imgPath));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (imgPath == null || imgPath.isEmpty()) {
+            System.err.println("Invalid image path: " + imgPath);
+            return null;
         }
-        return null;
+        try {
+            FileInputStream inputStream = new FileInputStream(imgPath);
+            BufferedImage image = ImageIO.read(inputStream);
+            if (image == null) {
+                System.err.println("Failed to load image: " + imgPath);
+            }
+            return image;
+        } catch (IOException e) {
+            System.err.println("Error loading image: " + e.getMessage());
+            return null;
+        }
     }
+
+
+
 
     /**
      * 判断任意概率的概率性事件是否发生
@@ -46,14 +58,12 @@ public class GameUtil {
      * @return 概率性事件发生返回true，否则返回false
      */
     public static boolean isInProbability(int numerator, int denominator) throws Exception {
-        if (denominator <= 0) {
-            throw new Exception("传入了非法的参数"); // Denominator must be greater than 0
-        }
-        if (numerator <= 0 || numerator > denominator) { // Check for numerator == 0 as well
-            throw new Exception("传入了非法的参数"); // Numerator must be between 1 and denominator
+        if (denominator <= 0 || numerator < 0 || numerator > denominator) {
+            throw new Exception("传入了非法的参数");
         }
         return random.nextDouble() < (double) numerator / denominator;
     }
+
 
 
 
@@ -67,6 +77,11 @@ public class GameUtil {
      * @return 该区间的随机数
      */
     public static int getRandomNumber(int min, int max) {
+        if (min > max) {
+            int temp = min;
+            min = max;
+            max = temp;
+        }
         return (int) (Math.random() * (max - min) + min);
     }
 
@@ -94,7 +109,9 @@ public class GameUtil {
      * @param g：画笔
      */
     public static void drawImage(BufferedImage image, int x, int y, Graphics g) {
+        if (image == null) {
+            return; // Do nothing if the image is null
+        }
         g.drawImage(image, x, y, null);
     }
-
 }

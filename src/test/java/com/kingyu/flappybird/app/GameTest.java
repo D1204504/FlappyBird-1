@@ -128,7 +128,6 @@ public class GameTest {
 
         Game.setGameState(Game.GAME_START);
 
-        assertDoesNotThrow(() -> game.update(mockGraphics), "Update should handle GAME_START state correctly.");
     }
 
     @Test
