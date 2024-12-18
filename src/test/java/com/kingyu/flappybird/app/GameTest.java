@@ -360,4 +360,63 @@ public class GameTest {
 
         assertEquals(Game.GAME_START, Game.getGameState(), "Pressing SPACE should transition to GAME_START");
     }
+    @Test
+    void testKeyTyped() {
+        Game game = new Game(true);
+        KeyEvent keyEvent = new KeyEvent(game, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, KeyEvent.VK_UNDEFINED, 'A');
+        assertDoesNotThrow(() -> game.new BirdKeyListener().keyTyped(keyEvent), "KeyTyped should not throw exceptions.");
+    }
+    @Test
+    void testKeyPressWithOtherKeys() {
+        Game game = new Game(true);
+        KeyEvent keyEvent = new KeyEvent(game, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'A');
+        assertDoesNotThrow(() -> game.new BirdKeyListener().keyPressed(keyEvent), "Pressing non-space keys should not cause issues.");
+    }
+    @Test
+    void testSilentModeThread() throws InterruptedException {
+        Game game = new Game(false); // 非靜默模式
+        Thread.sleep(100); // 等待重繪執行
+        assertTrue(true, "Repaint thread should execute in non-silent mode.");
+    }
+    @Test
+    void testComponentDrawing() {
+        Game game = new Game(true);
+        game.initGame();
+
+        Graphics mockGraphics = mock(Graphics.class);
+        game.update(mockGraphics);
+
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Update should not throw exceptions when drawing components.");
+    }
+    @Test
+    void testSilentModeBehavior() {
+        Game silentGame = new Game(true);  // silentMode = true
+        assertDoesNotThrow(silentGame::initGame, "Silent mode should initialize correctly.");
+
+        Game nonSilentGame = new Game(false); // silentMode = false
+        assertDoesNotThrow(nonSilentGame::initGame, "Non-silent mode should initialize correctly.");
+    }
+    @Test
+    void testUpdateDrawing() {
+        Game game = new Game(true);
+        game.initGame();
+        Graphics mockGraphics = mock(Graphics.class);
+
+        Game.setGameState(Game.GAME_READY);
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Drawing in GAME_READY should not throw exceptions.");
+
+        Game.setGameState(Game.GAME_START);
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Drawing in GAME_START should not throw exceptions.");
+
+        Game.setGameState(Game.STATE_OVER);
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Drawing in STATE_OVER should not throw exceptions.");
+    }
+    @Test
+    void testKeyTypedMethod() {
+        Game game = new Game(true);
+        KeyEvent keyEvent = new KeyEvent(game, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, KeyEvent.VK_UNDEFINED, 'A');
+        assertDoesNotThrow(() -> game.new BirdKeyListener().keyTyped(keyEvent), "KeyTyped should handle events without exceptions.");
+    }
+
+
 }

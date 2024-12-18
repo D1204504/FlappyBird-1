@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
 import java.io.*;
 import static org.mockito.Mockito.*;
+import com.kingyu.flappybird.util.MusicUtil;
+import com.kingyu.flappybird.util.Constant;
 
 
 class ScoreCounterTest {
@@ -58,4 +60,47 @@ class ScoreCounterTest {
         scoreCounter.score(deadBird); // Try scoring with the dead bird
         assertEquals(initialScore, scoreCounter.getCurrentScore(), "Score should not increase if the bird is dead");
     }
+    @Test
+    void testLoadBestScoreException() {
+        // 模擬文件讀取異常
+        File file = mock(File.class);
+        when(file.exists()).thenReturn(false);
+
+        // 確保不會拋出異常
+        assertDoesNotThrow(() -> scoreCounter.saveScore(), "保存分數時不應拋出異常");
+    }
+    @Test
+    void testSetInstance() {
+        ScoreCounter mockScoreCounter = mock(ScoreCounter.class);
+        ScoreCounter.setInstance(mockScoreCounter);
+
+        assertNotNull(ScoreCounter.getInstance(), "ScoreCounter 應成功替換為模擬對象");
+    }
+    @Test
+    void testSingleton() {
+        ScoreCounter instance1 = ScoreCounter.getInstance();
+        ScoreCounter instance2 = ScoreCounter.getInstance();
+
+        assertSame(instance1, instance2, "ScoreCounter 應是單例");
+    }
+    @Test
+    void testMultipleResets() {
+        scoreCounter.reset();
+        scoreCounter.reset();
+
+        assertEquals(0, scoreCounter.getCurrentScore(), "多次重置後分數應為 0");
+    }
+    @Test
+    void testScorePlaysSound() {
+        try (MockedStatic<MusicUtil> mockedMusicUtil = mockStatic(MusicUtil.class)) {
+            Bird bird = new Bird();
+            bird.reset();
+            scoreCounter.score(bird);
+
+            // 檢查是否正確調用了 MusicUtil.playScore()
+            mockedMusicUtil.verify(() -> MusicUtil.playScore(), times(1));
+        }
+    }
+
+
 }
