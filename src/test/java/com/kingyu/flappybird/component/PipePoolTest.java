@@ -98,4 +98,13 @@ class PipePoolTest {
         MovingPipe reusedMovingPipe = (MovingPipe) PipePool.get("MovingPipe");
         assertSame(movingPipe, reusedMovingPipe, "Returned MovingPipe should be reused");
     }
+    @Test
+    void testPipePoolOverflow() {
+        for (int i = 0; i < PipePool.MAX_PIPE_COUNT; i++) {
+            Pipe pipe = PipePool.get("Pipe");
+            assertNotNull(pipe, "應該能從池中獲取對象");
+        }
+        assertNull(PipePool.get("Pipe"), "超過最大容量後應返回 null");
+    }
+
 }

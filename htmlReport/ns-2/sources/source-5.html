@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=x-windows-950"> 
+  <title>Coverage Report > GameForeground</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kingyu.flappybird.component</a>
+</div>
+
+<h1>Coverage Summary for Class: GameForeground (com.kingyu.flappybird.component)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameForeground</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (30/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kingyu.flappybird.component;
+&nbsp;
+&nbsp;import java.awt.Graphics;
+&nbsp;import java.awt.image.BufferedImage;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import com.kingyu.flappybird.util.Constant;
+&nbsp;import com.kingyu.flappybird.util.GameUtil;
+&nbsp;
+&nbsp;/**
+&nbsp; * 前景?，目前管理云朵的生成??并?制容器中的云朵
+&nbsp; *
+&nbsp; * @author Kingyu
+&nbsp; */
+&nbsp;public class GameForeground {
+&nbsp;    private final List&lt;Cloud&gt; clouds; // 云朵的容器
+&nbsp;    private final BufferedImage[] cloudImages; // ?片?源
+&nbsp;    private long time; // 控制云的???算周期
+&nbsp;    private int speed;
+&nbsp;    public static final int CLOUD_INTERVAL = 100; // 云朵刷新的???算周期
+&nbsp;
+<b class="fc">&nbsp;    public GameForeground() {</b>
+<b class="fc">&nbsp;        clouds = new ArrayList&lt;&gt;();</b>
+&nbsp;        // ?入?片?源
+<b class="fc">&nbsp;        cloudImages = new BufferedImage[Constant.CLOUD_IMAGE_COUNT];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; Constant.CLOUD_IMAGE_COUNT; i++) {</b>
+<b class="fc">&nbsp;            cloudImages[i] = GameUtil.loadBufferedImage(Constant.CLOUDS_IMG_PATH[i]);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        time = System.currentTimeMillis();</b>
+<b class="fc">&nbsp;        speed = Constant.GAME_SPEED;// ?取?前??，用于控制云的???算周期</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?制方法
+&nbsp;    public void draw(Graphics g, Bird bird) {
+<b class="fc">&nbsp;        cloudBornLogic(); // 先更新云朵??</b>
+<b class="fc">&nbsp;        for (Cloud cloud : clouds) {</b>
+<b class="fc">&nbsp;            cloud.draw(g, bird); // 再?制云朵</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // 云朵的控制??
+&nbsp;    private void cloudBornLogic() {
+&nbsp;        // 每 100ms ?算一次
+<b class="fc">&nbsp;        if (System.currentTimeMillis() - time &gt; CLOUD_INTERVAL) {</b>
+<b class="fc">&nbsp;            time = System.currentTimeMillis(); // 重置 time</b>
+&nbsp;            // 如果屏幕的云朵?量小于允?的最大?量，根据?定的概率?机添加云朵
+<b class="fc">&nbsp;            if (clouds.size() &lt; Constant.MAX_CLOUD_COUNT) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    if (GameUtil.isInProbability(Constant.CLOUD_BORN_PERCENT, 100)) {</b>
+<b class="fc">&nbsp;                        int index = GameUtil.getRandomNumber(0, Constant.CLOUD_IMAGE_COUNT); // ?机?取云朵?片</b>
+<b class="fc">&nbsp;                        int x = Constant.FRAME_WIDTH; // 云朵初始位置 x</b>
+<b class="fc">&nbsp;                        int y = GameUtil.getRandomNumber(Constant.TOP_BAR_HEIGHT, Constant.FRAME_HEIGHT / 3); // y 坐?</b>
+<b class="fc">&nbsp;                        clouds.add(new Cloud(cloudImages[index], x, y));</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                } catch (Exception e) {</b>
+<b class="fc">&nbsp;                    e.printStackTrace();</b>
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;            // 移除?出屏幕的云朵
+<b class="fc">&nbsp;            clouds.removeIf(Cloud::isOutFrame);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // Getter for clouds list (for testing)
+&nbsp;    public List&lt;Cloud&gt; getClouds() {
+<b class="fc">&nbsp;        return clouds;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Setter for time (for testing)
+&nbsp;    public void setTime(long time) {
+<b class="fc">&nbsp;        this.time = time;</b>
+&nbsp;    }
+&nbsp;    public void setSpeed(int speed) {
+<b class="fc">&nbsp;        this.speed = speed; // Set the foreground&#39;s speed</b>
+<b class="fc">&nbsp;        for (Cloud cloud : clouds) {</b>
+<b class="fc">&nbsp;            cloud.setSpeed(speed); // Apply speed adjustment to clouds</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getSpeed() {
+<b class="fc">&nbsp;        return speed;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-18 20:47</div>
+</div>
+</body>
+</html>

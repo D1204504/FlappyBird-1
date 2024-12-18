@@ -34,15 +34,15 @@ public class MusicUtil {
     // Generic method to play a sound
     public static Clip playSound(String filePath) {
         try {
-            File audioFile = new File(filePath);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(filePath));
+            clip.open(inputStream);
             clip.start();
             return clip;
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-            return null;
+            System.err.println("Failed to play sound: " + e.getMessage());
+            return null; // 測試環境中返回 null
         }
     }
 }
+

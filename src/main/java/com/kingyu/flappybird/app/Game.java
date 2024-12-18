@@ -5,7 +5,7 @@ import com.kingyu.flappybird.component.Bird;
 import com.kingyu.flappybird.component.GameBackground;
 import com.kingyu.flappybird.component.GameForeground;
 import com.kingyu.flappybird.component.WelcomeAnimation;
-
+import com.kingyu.flappybird.util.ExitManager;
 import static com.kingyu.flappybird.util.Constant.*;
 
 import java.awt.Frame;
@@ -53,9 +53,10 @@ public class Game extends Frame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0); // 结束程序
+                ExitManager.exit(0); // 使用 ExitManager
             }
         });
+
         addKeyListener(new BirdKeyListener()); // 添加按键监听
     }
 
@@ -142,6 +143,9 @@ public class Game extends Frame {
     }
 
     public static void setGameState(int gameState) {
+        if (gameState != GAME_READY && gameState != GAME_START && gameState != STATE_OVER) {
+            throw new IllegalStateException("Invalid game state: " + gameState);
+        }
         Game.gameState = gameState;
     }
 

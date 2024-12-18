@@ -47,12 +47,15 @@ class MusicUtilTest {
         }
     }
     @Test
-    void testPlaySoundLineUnavailableException() throws Exception {
+    void testPlaySoundLineUnavailableException() {
         try (MockedStatic<AudioSystem> mockedAudioSystem = mockStatic(AudioSystem.class)) {
-            mockedAudioSystem.when(() -> AudioSystem.getClip()).thenThrow(new LineUnavailableException("Line unavailable"));
+            mockedAudioSystem.when(AudioSystem::getClip)
+                    .thenThrow(new LineUnavailableException("Line unavailable"));
 
-            assertNull(MusicUtil.playSound("resources/wav/fly.wav"), "playSound should return null when the line is unavailable");
+            assertNull(MusicUtil.playSound("resources/wav/fly.wav"),
+                    "音訊系統不可用時應返回 null");
         }
     }
+
 }
 

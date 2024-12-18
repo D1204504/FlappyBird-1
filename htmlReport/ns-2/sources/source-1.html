@@ -1,0 +1,322 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=x-windows-950"> 
+  <title>Coverage Report > Bird</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.kingyu.flappybird.component</a>
+</div>
+
+<h1>Coverage Summary for Class: Bird (com.kingyu.flappybird.component)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Bird</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85%
+  </span>
+  <span class="absValue">
+    (17/20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.2%
+  </span>
+  <span class="absValue">
+    (68/78)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.kingyu.flappybird.component;
+&nbsp;
+&nbsp;import java.awt.Color;
+&nbsp;import java.awt.Graphics;
+&nbsp;import java.awt.Rectangle;
+&nbsp;import java.awt.image.BufferedImage;
+&nbsp;
+&nbsp;import com.kingyu.flappybird.app.Game;
+&nbsp;import com.kingyu.flappybird.util.Constant;
+&nbsp;import com.kingyu.flappybird.util.GameUtil;
+&nbsp;import com.kingyu.flappybird.util.MusicUtil;
+&nbsp;
+&nbsp;/**
+&nbsp; * 小??，??小?的?制与?行??
+&nbsp; *
+&nbsp; * @author Kingyu
+&nbsp; */
+<b class="fc">&nbsp;public class Bird {</b>
+&nbsp;    public static final int IMG_COUNT = 8; // ?片?量
+&nbsp;    public static final int STATE_COUNT = 4; // ???
+&nbsp;    private final BufferedImage[][] birdImages; // 小?的?片???象
+&nbsp;    private final int x;
+&nbsp;    private int y; // 小?的坐?
+&nbsp;    private int wingState; // 翅膀??
+&nbsp;
+&nbsp;    // ?片?源
+&nbsp;    private BufferedImage image; // ??的小??片
+&nbsp;
+&nbsp;    // 小?的??
+&nbsp;    private int state;
+&nbsp;    public static final int BIRD_NORMAL = 0;
+&nbsp;    public static final int BIRD_UP = 1;
+&nbsp;    public static final int BIRD_FALL = 2;
+&nbsp;    public static final int BIRD_DEAD_FALL = 3;
+&nbsp;    public static final int BIRD_DEAD = 4;
+&nbsp;
+&nbsp;    public int getState() {
+<b class="fc">&nbsp;        return this.state;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private final Rectangle birdCollisionRect; // 碰撞矩形
+&nbsp;    public static final int RECT_DESCALE = 2; // ??碰撞矩形?高的??
+&nbsp;
+&nbsp;    private final ScoreCounter counter; // ?分器
+&nbsp;    private final GameOverAnimation gameOverAnimation;
+&nbsp;
+&nbsp;    public static int BIRD_WIDTH;
+&nbsp;    public static int BIRD_HEIGHT;
+&nbsp;
+&nbsp;    // 在构造器中??源初始化
+<b class="fc">&nbsp;    public Bird() {</b>
+<b class="fc">&nbsp;        counter = ScoreCounter.getInstance(); // ?分器</b>
+<b class="fc">&nbsp;        gameOverAnimation = new GameOverAnimation();</b>
+&nbsp;
+&nbsp;        // ?取小??片?源
+<b class="fc">&nbsp;        birdImages = new BufferedImage[STATE_COUNT][IMG_COUNT];</b>
+<b class="fc">&nbsp;        for (int j = 0; j &lt; STATE_COUNT; j++) {</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; IMG_COUNT; i++) {</b>
+<b class="fc">&nbsp;                birdImages[j][i] = GameUtil.loadBufferedImage(Constant.BIRDS_IMG_PATH[j][i]);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        assert birdImages[0][0] != null;</b>
+<b class="fc">&nbsp;        BIRD_WIDTH = birdImages[0][0].getWidth();</b>
+<b class="fc">&nbsp;        BIRD_HEIGHT = birdImages[0][0].getHeight();</b>
+&nbsp;
+&nbsp;        // 初始化小?的坐?
+<b class="fc">&nbsp;        x = Constant.FRAME_WIDTH &gt;&gt; 2;</b>
+<b class="fc">&nbsp;        y = Constant.FRAME_HEIGHT &gt;&gt; 1;</b>
+&nbsp;
+&nbsp;        // 初始化碰撞矩形
+<b class="fc">&nbsp;        int rectX = x - BIRD_WIDTH / 2;</b>
+<b class="fc">&nbsp;        int rectY = y - BIRD_HEIGHT / 2;</b>
+<b class="fc">&nbsp;        birdCollisionRect = new Rectangle(rectX + RECT_DESCALE, rectY + RECT_DESCALE * 2, BIRD_WIDTH - RECT_DESCALE * 3,</b>
+&nbsp;                BIRD_WIDTH - RECT_DESCALE * 4); // 碰撞矩形的坐?与小?相同
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?制方法
+&nbsp;    public void draw(Graphics g) {
+<b class="fc">&nbsp;        movement();</b>
+<b class="fc">&nbsp;        int state_index = Math.min(state, BIRD_DEAD_FALL); // ?片?源索引</b>
+&nbsp;        // 小?中心??算
+<b class="fc">&nbsp;        int halfImgWidth = birdImages[state_index][0].getWidth() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        int halfImgHeight = birdImages[state_index][0].getHeight() &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        if (velocity &gt; 0)</b>
+<b class="nc">&nbsp;            image = birdImages[BIRD_UP][0];</b>
+<b class="fc">&nbsp;        g.drawImage(image, x - halfImgWidth, y - halfImgHeight, null); // x坐?于窗口1/4?，y坐?位窗口中心</b>
+&nbsp;
+<b class="fc">&nbsp;        if (state == BIRD_DEAD)</b>
+<b class="nc">&nbsp;            gameOverAnimation.draw(g, this);</b>
+<b class="fc">&nbsp;        else if (state != BIRD_DEAD_FALL)</b>
+<b class="fc">&nbsp;            drawScore(g);</b>
+&nbsp;        // ?制碰撞矩形
+&nbsp;//      g.setColor(Color.black);
+&nbsp;//      g.drawRect((int) birdRect.getX(), (int) birdRect.getY(), (int) birdRect.getWidth(), (int) birdRect.getHeight());
+&nbsp;    }
+&nbsp;
+&nbsp;    public static final int ACC_FLAP = 14; // players speed on flapping
+&nbsp;    public static final double ACC_Y = 2; // players downward acceleration
+&nbsp;    public static final int MAX_VEL_Y = 15; // max vel along Y, max descend speed
+<b class="fc">&nbsp;    private int velocity = 0; // bird&#39;s velocity along Y, default same as playerFlapped</b>
+<b class="fc">&nbsp;    private final int BOTTOM_BOUNDARY = Constant.FRAME_HEIGHT - GameBackground.GROUND_HEIGHT - (BIRD_HEIGHT / 2);</b>
+&nbsp;
+&nbsp;    // 小?的?行??
+&nbsp;    public void movement() {
+&nbsp;        // 翅膀??，??小?振翅?行
+<b class="fc">&nbsp;        wingState++;</b>
+<b class="fc">&nbsp;        image = birdImages[Math.min(state, BIRD_DEAD_FALL)][wingState / 10 % IMG_COUNT];</b>
+<b class="fc">&nbsp;        if (state == BIRD_FALL || state == BIRD_DEAD_FALL) {</b>
+<b class="fc">&nbsp;            freeFall();</b>
+<b class="fc">&nbsp;            if (birdCollisionRect.y &gt; BOTTOM_BOUNDARY) {</b>
+<b class="nc">&nbsp;                if (state == BIRD_FALL) {</b>
+<b class="nc">&nbsp;                    MusicUtil.playCrash();</b>
+&nbsp;                }
+<b class="nc">&nbsp;                die();</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void freeFall() {
+<b class="fc">&nbsp;        if (velocity &lt; MAX_VEL_Y)</b>
+<b class="fc">&nbsp;            velocity -= ACC_Y;</b>
+<b class="fc">&nbsp;        y = Math.min((y - velocity), BOTTOM_BOUNDARY);</b>
+<b class="fc">&nbsp;        birdCollisionRect.y = birdCollisionRect.y - velocity;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void die() {
+<b class="nc">&nbsp;        counter.saveScore();</b>
+<b class="nc">&nbsp;        state = BIRD_DEAD;</b>
+<b class="nc">&nbsp;        Game.setGameState(Game.STATE_OVER);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 小?振翅
+&nbsp;    public void birdFlap() {
+<b class="fc">&nbsp;        if (keyIsReleased()) {</b>
+<b class="fc">&nbsp;            if (isDead())</b>
+&nbsp;                return;
+<b class="fc">&nbsp;            MusicUtil.playFly(); // 播放音效</b>
+<b class="fc">&nbsp;            state = BIRD_UP;</b>
+<b class="fc">&nbsp;            if (birdCollisionRect.y &gt; Constant.TOP_BAR_HEIGHT) {</b>
+<b class="fc">&nbsp;                velocity = ACC_FLAP; // 每次振翅?速度改?上升速度</b>
+<b class="fc">&nbsp;                wingState = 0; // 重置翅膀??</b>
+&nbsp;            }
+<b class="fc">&nbsp;            keyPressed();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // 小?下降
+&nbsp;    public void birdFall() {
+<b class="fc">&nbsp;        if (isDead())</b>
+&nbsp;            return;
+<b class="fc">&nbsp;        state = BIRD_FALL;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 小??落（已死）
+&nbsp;    public void deadBirdFall() {
+<b class="fc">&nbsp;        state = BIRD_DEAD_FALL;</b>
+<b class="fc">&nbsp;        MusicUtil.playCrash(); // 播放音效</b>
+<b class="fc">&nbsp;        velocity = 0;  // 速度置0，防止小???上升与水管重?</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 判?小?是否死亡
+&nbsp;    public boolean isDead() {
+<b class="fc">&nbsp;        return state == BIRD_DEAD_FALL || state == BIRD_DEAD;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?制??分?
+&nbsp;    private void drawScore(Graphics g) {
+<b class="fc">&nbsp;        g.setColor(Color.white);</b>
+<b class="fc">&nbsp;        g.setFont(Constant.CURRENT_SCORE_FONT);</b>
+<b class="fc">&nbsp;        String str = Long.toString(counter.getCurrentScore());</b>
+<b class="fc">&nbsp;        int x = Constant.FRAME_WIDTH - GameUtil.getStringWidth(Constant.CURRENT_SCORE_FONT, str) &gt;&gt; 1;</b>
+<b class="fc">&nbsp;        g.drawString(str, x, Constant.FRAME_HEIGHT / 10);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 重置小?
+&nbsp;    public void reset() {
+<b class="fc">&nbsp;        state = BIRD_NORMAL; // 小???</b>
+<b class="fc">&nbsp;        y = Constant.FRAME_HEIGHT &gt;&gt; 1; // 小?坐?</b>
+<b class="fc">&nbsp;        velocity = 0; // 小?速度</b>
+&nbsp;
+<b class="fc">&nbsp;        int ImgHeight = birdImages[state][0].getHeight();</b>
+<b class="fc">&nbsp;        birdCollisionRect.y = y - ImgHeight / 2 + RECT_DESCALE * 2; // 小?碰撞矩形坐?</b>
+&nbsp;
+<b class="fc">&nbsp;        counter.reset(); // 重置?分器</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    private boolean keyFlag = true; // 按???，true?已?放，使?按住按??不?重复?用方法</b>
+&nbsp;
+&nbsp;    public void keyPressed() {
+<b class="fc">&nbsp;        keyFlag = false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void keyReleased() {
+<b class="fc">&nbsp;        keyFlag = true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean keyIsReleased() {
+<b class="fc">&nbsp;        return keyFlag;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public long getCurrentScore() {
+<b class="nc">&nbsp;        return counter.getCurrentScore();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public long getBestScore() {
+<b class="nc">&nbsp;        return counter.getBestScore();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getBirdX() {
+<b class="fc">&nbsp;        return x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ?取小?的碰撞矩形
+&nbsp;    public Rectangle getBirdCollisionRect() {
+<b class="fc">&nbsp;        return birdCollisionRect;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-18 20:47</div>
+</div>
+</body>
+</html>

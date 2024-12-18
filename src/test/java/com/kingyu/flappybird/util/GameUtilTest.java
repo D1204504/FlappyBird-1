@@ -178,5 +178,54 @@ class GameUtilTest {
 
         assertFalse(GameUtil.isInProbability(5, 5), "当随机值等于 1.0 时，应返回 false");
     }
+    @Test
+    void testLoadBufferedImageInvalidFile() {
+        BufferedImage result = GameUtil.loadBufferedImage("resources/non_image_file.txt");
+        assertNull(result, "非图片文件路径应返回 null");
 
+        result = GameUtil.loadBufferedImage("resources/non_existing_file.png");
+        assertNull(result, "不存在的文件路径应返回 null");
+    }
+    @Test
+    void testDrawImageWithNullImage() {
+        Graphics mockGraphics = mock(Graphics.class);
+
+        GameUtil.drawImage(null, 10, 20, mockGraphics);
+
+        // 验证没有调用 drawImage 方法
+        verify(mockGraphics, never()).drawImage(any(), anyInt(), anyInt(), isNull());
+    }
+    @Test
+    void testGetRandomNumberExtremeRange() {
+        int result = GameUtil.getRandomNumber(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        assertTrue(result >= Integer.MIN_VALUE && result < Integer.MAX_VALUE, "随机数应在极端范围内");
+
+        result = GameUtil.getRandomNumber(Integer.MAX_VALUE, Integer.MIN_VALUE);
+        assertTrue(result >= Integer.MIN_VALUE && result < Integer.MAX_VALUE, "反转极端范围应正确处理");
+    }
+    @Test
+    void testIsInProbabilityExtremeCase() throws Exception {
+        Random mockRandom = new Random() {
+            @Override
+            public double nextDouble() {
+                return 1.0; // 模拟随机值为 1.0
+            }
+        };
+        GameUtil.setRandom(mockRandom);
+
+        assertFalse(GameUtil.isInProbability(5, 5), "随机值等于 1.0 时应返回 false");
+    }
+    @Test
+    void testGameUtilIsInProbabilityException() {
+        assertThrows(Exception.class, () -> GameUtil.isInProbability(-1, 10), "負分子應拋出異常");
+        assertThrows(Exception.class, () -> GameUtil.isInProbability(5, 0), "分母為 0 應拋出異常");
+    }
+    @Test
+    void testLoadBufferedImageInvalidImageFile() {
+        // 測試載入一個存在但不是圖片的檔案（假設 resources/non_image_file.txt 是一個文字檔案）
+        BufferedImage result = GameUtil.loadBufferedImage("resources/img/non_image_file.txt");
+
+        // 驗證返回的圖片為 null
+        assertNull(result, "應返回 null，因為檔案存在但不是有效圖片");
+    }
 }
