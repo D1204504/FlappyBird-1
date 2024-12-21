@@ -55,6 +55,7 @@ public class Pipe {
         pipeRect.width = PIPE_WIDTH;
     }
 
+
     /**
      * 设置水管参数
      *

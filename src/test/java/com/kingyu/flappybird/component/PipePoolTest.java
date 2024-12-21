@@ -2,7 +2,11 @@ package com.kingyu.flappybird.component;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
+
 class PipePoolTest {
+    private static List<Pipe> pool;
+    private static List<Pipe> movingPool;
     @BeforeEach
     void resetPool() {
         // Clear and reinitialize the pipe pool
@@ -105,6 +109,25 @@ class PipePoolTest {
             assertNotNull(pipe, "應該能從池中獲取對象");
         }
         assertNull(PipePool.get("Pipe"), "超過最大容量後應返回 null");
+    }
+    @Test
+    void testGetReturnsNullWhenPoolIsEmpty() {
+        // 清空池
+        PipePool.clear();
+
+        // 測試 pool 為空時 get("Pipe") 返回 null
+        Pipe result = PipePool.get("Pipe");
+        assertNull(result, "當 pool 為空時應返回 null");
+    }
+
+    @Test
+    void testGetReturnsNullWhenMovingPoolIsEmpty() {
+        // 清空池
+        PipePool.clear();
+
+        // 測試 movingPool 為空時 get("MovingPipe") 返回 null
+        Pipe result = PipePool.get("MovingPipe");
+        assertNull(result, "當 movingPool 為空時應返回 null");
     }
 
 }

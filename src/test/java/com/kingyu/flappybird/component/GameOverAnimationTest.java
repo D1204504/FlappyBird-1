@@ -55,5 +55,6 @@ class GameOverAnimationTest {
         // Verify the scores are fetched from the Bird object
         verify(bird, atLeastOnce()).getCurrentScore();
         verify(bird, atLeastOnce()).getBestScore();
+
     }
 }

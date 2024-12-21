@@ -1,10 +1,6 @@
 package com.kingyu.flappybird.component;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 
 import com.kingyu.flappybird.util.Constant;
 import com.kingyu.flappybird.util.MusicUtil;
@@ -17,21 +13,10 @@ import com.kingyu.flappybird.util.MusicUtil;
  */
 public class ScoreCounter {
 
-    public static void setInstance(ScoreCounter scoreCounter) {
-    }
+	private final String scoreFilePath;
 
-    private static class ScoreCounterHolder {
-		private static final ScoreCounter scoreCounter = new ScoreCounter();
-	}
-
-	public static ScoreCounter getInstance() {
-		return ScoreCounterHolder.scoreCounter;
-	}
-
-	private long score = 0; // 分数
-	private long bestScore; // 最高分数
-
-	private ScoreCounter() {
+	private ScoreCounter(String filePath) {
+		this.scoreFilePath = filePath;
 		bestScore = -1;
 		try {
 			loadBestScore();
@@ -40,9 +25,25 @@ public class ScoreCounter {
 		}
 	}
 
+	private static class ScoreCounterHolder {
+		private static final ScoreCounter scoreCounter = new ScoreCounter(Constant.SCORE_FILE_PATH);
+	}
+
+	public static ScoreCounter getInstance() {
+		return ScoreCounterHolder.scoreCounter;
+	}
+
+	// Add a factory method for testing
+	public static ScoreCounter createInstanceForTesting(String filePath) {
+		return new ScoreCounter(filePath);
+	}
+
+	private long score = 0; // 分数
+	private long bestScore; // 最高分数
+
 	// 装载最高纪录
 	private void loadBestScore() throws Exception {
-		File file = new File(Constant.SCORE_FILE_PATH);
+		File file = new File(scoreFilePath); // Use instance variable
 		if (file.exists()) {
 			DataInputStream dis = new DataInputStream(new FileInputStream(file));
 			bestScore = dis.readLong();
@@ -53,14 +54,21 @@ public class ScoreCounter {
 	public void saveScore() {
 		bestScore = Math.max(bestScore, getCurrentScore());
 		try {
-			File file = new File(Constant.SCORE_FILE_PATH);
-			DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));
-			dos.writeLong(bestScore);
-			dos.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+			writeBestScoreToFile(bestScore);
+		} catch (IOException e) {
+			System.err.println("Failed to save score: " + e.getMessage());
 		}
 	}
+
+	// Helper method to handle file writing
+	protected void writeBestScoreToFile(long score) throws IOException {
+		File file = new File(scoreFilePath); // Use instance variable
+		try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(file))) {
+			dos.writeLong(score);
+		}
+	}
+
+
 
 	public void score(Bird bird) {
 		if (!bird.isDead()) {
@@ -80,5 +88,4 @@ public class ScoreCounter {
 	public void reset() {
 		score = 0;
 	}
-
 }

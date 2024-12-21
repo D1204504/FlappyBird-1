@@ -36,6 +36,7 @@ public class GameElementLayer {
     }
 
     private void pipeBornLogic(Bird bird) {
+        System.out.println("pipeBornLogic invoked. pipes.size=" + pipes.size() + ", bird.isDead=" + bird.isDead());
         if (bird.isDead()) return;
 
         if (pipes.isEmpty()) {
@@ -56,18 +57,23 @@ public class GameElementLayer {
     }
 
     private void generateInitialPipes() {
-        int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1);
-        Pipe top = PipePool.get("Pipe");
-        top.setAttribute(Constant.FRAME_WIDTH, -Constant.TOP_PIPE_LENGTHENING,
-                topHeight + Constant.TOP_PIPE_LENGTHENING, Pipe.TYPE_TOP_NORMAL, true);
+        try {
+            int topHeight = GameUtil.getRandomNumber(MIN_HEIGHT, MAX_HEIGHT + 1);
+            Pipe top = PipePool.get("Pipe");
+            top.setAttribute(Constant.FRAME_WIDTH, -Constant.TOP_PIPE_LENGTHENING,
+                    topHeight + Constant.TOP_PIPE_LENGTHENING, Pipe.TYPE_TOP_NORMAL, true);
 
-        Pipe bottom = PipePool.get("Pipe");
-        bottom.setAttribute(Constant.FRAME_WIDTH, topHeight + VERTICAL_INTERVAL,
-                Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, Pipe.TYPE_BOTTOM_NORMAL, true);
+            Pipe bottom = PipePool.get("Pipe");
+            bottom.setAttribute(Constant.FRAME_WIDTH, topHeight + VERTICAL_INTERVAL,
+                    Constant.FRAME_HEIGHT - topHeight - VERTICAL_INTERVAL, Pipe.TYPE_BOTTOM_NORMAL, true);
 
-        pipes.add(top);
-        pipes.add(bottom);
+            pipes.add(top);
+            pipes.add(bottom);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     private void addPipeLogic(Pipe lastPipe) {
         try {
@@ -145,3 +151,4 @@ public class GameElementLayer {
         return pipes;
     }
 }
+
