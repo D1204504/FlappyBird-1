@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowListener;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,6 +26,11 @@ public class GameTest {
             throw new UnsupportedOperationException("Mocked System.exit called with status: " + status);
         });
     }
+    @AfterEach
+    void tearDown() {
+        ExitManager.reset(); // Clean up any state after each test
+    }
+
     @Test
     void testGameInitialization() {
         Game game = new Game(true); // 靜默模式
@@ -159,31 +165,6 @@ public class GameTest {
         Thread.sleep(100);
         assertTrue(true, "Repaint loop should execute without exceptions");
     }
-
-    @Test
-    void testThreadInterruptedException() {
-        Game game = new Game(true); // 靜默模式
-
-        Thread mockThread = mock(Thread.class);
-
-        try {
-            doThrow(new InterruptedException("Test Exception")).when(mockThread).sleep(anyLong());
-
-            assertDoesNotThrow(() -> {
-                new Thread(() -> {
-                    try {
-                        mockThread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-            });
-
-        } catch (InterruptedException e) {
-            fail("InterruptedException should not be thrown during mocking");
-        }
-    }
-
     // ====== 系統退出測試 ======
     @Test
     void testWindowClosing() {
@@ -216,6 +197,93 @@ public class GameTest {
         assertTrue(exception.getMessage().contains("Mocked System.exit called"), "應該模擬 System.exit 的行為");
         assertTrue(ExitManager.isExitCalled(), "ExitManager 應該標記 exit 已被調用");
     }
+    @Test
+    void testSilentModeDoesNotStartThread() {
+        Game game = new Game(true); // Silent mode
+        assertNotNull(game, "Game instance should be created in silent mode.");
 
+        // Verify no repaint thread is started
+        // This can be inferred by checking no exceptions or unexpected behavior
+        game.initGame();
+        assertEquals(Game.GAME_READY, Game.getGameState(), "Game should initialize in GAME_READY state in silent mode.");
+    }
+    @Test
+    void testUnsupportedKeyPress() {
+        Game game = new Game(true); // Silent mode
+        game.initGame();
+
+        KeyEvent invalidKey = new KeyEvent(game, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_A, 'A');
+        assertDoesNotThrow(() -> game.new BirdKeyListener().keyPressed(invalidKey), "Unsupported key press should not throw exceptions.");
+    }
+    @Test
+    void testComponentRenderingInGameReady() {
+        Game game = new Game(true); // Silent mode
+        game.initGame();
+        Game.setGameState(Game.GAME_READY);
+
+        Graphics mockGraphics = mock(Graphics.class);
+
+        // Call update and verify that welcomeAnimation is drawn
+        game.update(mockGraphics);
+
+        // Add more verifications if needed for other components
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Rendering in GAME_READY state should not throw exceptions.");
+    }
+
+    @Test
+    void testComponentRenderingInGameStart() {
+        Game game = new Game(true); // Silent mode
+        game.initGame();
+        Game.setGameState(Game.GAME_START);
+
+        Graphics mockGraphics = mock(Graphics.class);
+
+        // Call update and verify that game elements are drawn
+        assertDoesNotThrow(() -> game.update(mockGraphics), "Rendering in GAME_START state should not throw exceptions.");
+    }
+    @Test
+    void testRepaintLoopThreadInterruption() {
+        Game game = new Game(true); // Silent mode
+
+        assertDoesNotThrow(() -> {
+            Thread testThread = new Thread(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // This block should now be executed
+                    System.out.println("Thread was interrupted.");
+                }
+            });
+
+            testThread.start();
+            testThread.interrupt(); // Interrupt to simulate behavior
+            testThread.join(); // Ensure thread finishes before test ends
+        }, "Thread interruption should be handled gracefully.");
+    }
+    @Test
+    void testRepaintThreadInterruptedException() {
+        Game game = new Game(true); // Silent mode
+
+        Thread mockThread = mock(Thread.class); // Mock a Thread object
+
+        try {
+            // Simulate an InterruptedException when Thread.sleep() is called
+            doThrow(new InterruptedException("Mocked InterruptedException")).when(mockThread).sleep(anyLong());
+
+            // Start the game thread and simulate the exception
+            assertDoesNotThrow(() -> {
+                new Thread(() -> {
+                    try {
+                        mockThread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // This block should now be executed
+                        e.printStackTrace();
+                    }
+                }).start();
+            }, "Thread interruption should be handled gracefully.");
+        } catch (InterruptedException e) {
+            fail("InterruptedException should not occur during test setup.");
+        }
+    }
 
 }

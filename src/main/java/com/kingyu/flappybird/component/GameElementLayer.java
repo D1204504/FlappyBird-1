@@ -31,6 +31,12 @@ public class GameElementLayer {
                 i--;
             }
         }
+        // Ensure the number of pipes does not exceed FULL_PIPE
+        while (pipes.size() > FULL_PIPE) {
+            Pipe excessPipe = pipes.remove(0);
+            PipePool.giveBack(excessPipe);
+        }
+
         isCollideBird(bird);
         pipeBornLogic(bird);
     }
@@ -79,20 +85,27 @@ public class GameElementLayer {
         try {
             int currentScore = (int) ScoreCounter.getInstance().getCurrentScore() + 1;
             if (GameUtil.isInProbability(currentScore, 20)) {
-                if (GameUtil.isInProbability(1, 4))
+                if (GameUtil.isInProbability(1, 4)) {
+                    System.out.println("Adding moving hover pipe");
                     addMovingHoverPipe(lastPipe);
-                else
+                } else {
+                    System.out.println("Adding moving normal pipe");
                     addMovingNormalPipe(lastPipe);
+                }
             } else {
-                if (GameUtil.isInProbability(1, 2))
+                if (GameUtil.isInProbability(1, 2)) {
+                    System.out.println("Adding normal pipe");
                     addNormalPipe(lastPipe);
-                else
+                } else {
+                    System.out.println("Adding hover pipe");
                     addHoverPipe(lastPipe);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private void addNormalPipe(Pipe lastPipe) {
         createPipe(lastPipe, Pipe.TYPE_TOP_NORMAL, Pipe.TYPE_BOTTOM_NORMAL);

@@ -19,12 +19,16 @@ public class Bird {
     public static final int IMG_COUNT = 8; // 图片数量
     public static final int STATE_COUNT = 4; // 状态数
     private final BufferedImage[][] birdImages; // 小鸟的图片数组对象
+    private final ScoreCounter counter;
     private final int x;
     private int y; // 小鸟的坐标
     private int wingState; // 翅膀状态
+    public int getVelocity() {
+        return velocity;
+    }
 
     // 图片资源
-    private BufferedImage image; // 实时的小鸟图片
+    private BufferedImage image; // 实时小鸟图片
 
     // 小鸟的状态
     private int state;
@@ -41,15 +45,14 @@ public class Bird {
     private final Rectangle birdCollisionRect; // 碰撞矩形
     public static final int RECT_DESCALE = 2; // 补偿碰撞矩形宽高的参数
 
-    private final ScoreCounter counter; // 计分器
     private final GameOverAnimation gameOverAnimation;
 
     public static int BIRD_WIDTH;
     public static int BIRD_HEIGHT;
 
     // 在构造器中对资源初始化
-    public Bird() {
-        counter = ScoreCounter.getInstance(); // 计分器
+    public Bird(ScoreCounter counter) {
+        this.counter = counter;
         gameOverAnimation = new GameOverAnimation();
 
         // 读取小鸟图片资源
@@ -74,7 +77,10 @@ public class Bird {
         birdCollisionRect = new Rectangle(rectX + RECT_DESCALE, rectY + RECT_DESCALE * 2, BIRD_WIDTH - RECT_DESCALE * 3,
                 BIRD_WIDTH - RECT_DESCALE * 4); // 碰撞矩形的坐标与小鸟相同
     }
-
+    // Default Constructor Delegates to New Constructor
+    public Bird() {
+        this(ScoreCounter.getInstance()); // Default behavior uses the singleton instance
+    }
     // 绘制方法
     public void draw(Graphics g) {
         movement();

@@ -50,7 +50,6 @@ public class Game extends Frame {
         setResizable(false); // 设置窗口大小不可变
         // 添加关闭窗口事件
         addWindowListener(new WindowAdapter() {
-            @Override
             public void windowClosing(WindowEvent e) {
                 ExitManager.exit(0); // 使用 ExitManager
             }
