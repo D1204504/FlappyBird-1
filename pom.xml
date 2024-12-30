@@ -46,7 +46,7 @@
                     <rulesets>
                         <ruleset>rulesets/java/basic.xml</ruleset>
                         <ruleset>rulesets/java/design.xml</ruleset>
-                        <ruleset>rulesets/java/codestyle.xml</ruleset>
+                        <ruleset>rulesets/java/naming.xml</ruleset>
                     </rulesets>
                     <targetJdk>11</targetJdk>
                     <failOnViolation>false</failOnViolation>
